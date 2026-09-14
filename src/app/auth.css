@@ -1,0 +1,42 @@
+.session-state {
+  max-width: 520px;
+  margin: 14vh auto;
+  padding: 36px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-align: center;
+}
+.session-state p {
+  color: var(--muted);
+}
+.profile-card {
+  max-width: 700px;
+}
+.profile-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 28px 0 0;
+}
+.profile-card dl div {
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+.profile-card dt {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.profile-card dd {
+  margin: 7px 0 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 650px) {
+  .profile-card dl {
+    grid-template-columns: 1fr;
+  }
+}

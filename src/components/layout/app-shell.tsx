@@ -12,6 +12,8 @@ import {
   MapPin,
   Menu,
   MessageCircle,
+  PanelLeftClose,
+  PanelLeftOpen,
   Settings,
   Sprout,
   Store,
@@ -43,6 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const locale = useAppSelector((state) => state.ui.locale);
   const role = useAppSelector((state) => state.auth.identity?.role);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const initial = useAppSelector(
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
@@ -61,7 +64,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="shell">
+    <div className={`shell${sidebarCollapsed ? ' sidebar-collapsed' : ''}`}>
       {mobileOpen && <button className="sidebar-scrim" aria-label="Close navigation" onClick={closeMobileNav} />}
       <aside className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">
@@ -71,6 +74,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
           <Button variant="ghost" className="mobile-close" onClick={closeMobileNav} aria-label="Close navigation">
             <X />
+          </Button>
+          <Button variant="ghost" className="sidebar-collapse-toggle" onClick={() => setSidebarCollapsed((collapsed) => !collapsed)} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-pressed={sidebarCollapsed}>
+            {sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
           </Button>
         </div>
         <div className="workspace-card">

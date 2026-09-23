@@ -123,8 +123,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/profile" className="avatar" aria-label="Open profile">{initial}</Link>
           </div>
         </header>
-        <main id="main-content">{children}</main>
-        <footer>KRASHAQ AGRITECH <span>Rooted in knowledge. Growing with you.</span></footer>
+        <main id="main-content">
+          {children}
+          <footer>KRASHAQ AGRITECH <span>Rooted in knowledge. Growing with you.</span></footer>
+        </main>
       </div>
     </div>
   );

@@ -2140,6 +2140,19 @@ nav a svg { flex: 0 0 auto; }
 @media (max-width: 700px) { .topbar { min-height: 50px; height: 50px; padding: 0 14px; } .topbar-context { gap: 8px; } .topbar-kicker { display: none; } .topbar-overview { min-height: 32px; padding: 6px 9px; } .topbar-links { gap: 2px; } .topbar-links a { padding: 6px 7px; } .topbar-links a span { display: none; } }
 @media (max-width: 420px) { .topbar-links { display: none; } }
 
+/* Fixed shell: only the content region scrolls while header and sidebar stay in place. */
+.shell { min-height: 100vh; height: 100vh; overflow: hidden; }
+.main { height: 100vh; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.main > .topbar { flex: 0 0 52px; position: relative; z-index: 20; }
+#main-content { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+#main-content > footer { margin-top: 0; }
+@media (max-width: 650px) {
+  .shell { height: 100dvh; min-height: 100dvh; }
+  .main { height: 100dvh; }
+  .main > .topbar { flex-basis: 50px; }
+}
+
+
 /* Annotated chat workspace polish: keep the welcome surface balanced within the transcript and composer. */
 .chat-workspace .mx-auto.flex.w-full.max-w-3xl {
   width: min(100%, 900px);

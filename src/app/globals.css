@@ -2177,6 +2177,23 @@ nav a svg { flex: 0 0 auto; }
 @media (max-width: 700px) { .topbar { min-height: 50px; height: 50px; padding: 0 14px; } .topbar-context { gap: 8px; } .topbar-kicker { display: none; } .topbar-overview { min-height: 32px; padding: 6px 9px; } .topbar-links { gap: 2px; } .topbar-links a { padding: 6px 7px; } .topbar-links a span { display: none; } .profile-name { display: none; } }
 @media (max-width: 420px) { .topbar-links { display: none; } }
 
+/* Chat history uses the primary sidebar rail on chat routes. */
+@media (min-width: 651px) {
+  .chat-shell > .sidebar > nav,
+  .chat-shell > .sidebar > .sidebar-bottom > .sidebar-tip,
+  .chat-shell > .sidebar > .sidebar-bottom > .small-brand { display: none; }
+  .chat-shell > .sidebar > .sidebar-bottom { margin-top: auto; }
+  .chat-shell > .sidebar > .sidebar-profile { display: flex; }
+  .chat-shell .chat-thread-head { padding-top: 0; }
+  .chat-shell .chat-thread-sidebar .chat-thread-list { max-height: calc(100vh - 150px); overflow-y: auto; }
+  .chat-shell .chat-thread-sidebar { position: fixed; top: 52px; bottom: 0; left: 0; z-index: 15; width: 214px; min-width: 214px; padding: 20px 14px; border-right: 1px solid var(--line); background: var(--paper); }
+  .chat-shell .chat-conversation { margin-left: 214px; width: calc(100% - 214px); }
+  .chat-shell .chat-thread-sidebar.is-collapsed { width: 76px; min-width: 76px; padding-inline: 10px; }
+  .chat-shell .chat-thread-sidebar.is-collapsed + .chat-conversation { margin-left: 76px; width: calc(100% - 76px); }
+  .chat-shell.sidebar-collapsed .chat-thread-sidebar { left: 0; }
+  .chat-shell.sidebar-collapsed .chat-conversation { margin-left: 214px; width: calc(100% - 214px); }
+}
+
 /* Fixed shell: only the content region scrolls while header and sidebar stay in place. */
 .shell { min-height: 100vh; height: 100vh; overflow: hidden; }
 .main { height: 100vh; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }

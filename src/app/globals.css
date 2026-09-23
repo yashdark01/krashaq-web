@@ -1838,3 +1838,61 @@ nav a:hover,
     transition: none !important;
   }
 }
+
+/* Final product-wide polish: consistent touch targets, focus, density, and mobile hierarchy. */
+:root {
+  --shadow-soft: 0 10px 30px rgba(23, 56, 43, 0.06);
+}
+::selection { background: #cce5cc; color: var(--ink); }
+.button,
+button,
+nav a,
+.sidebar-bottom > a,
+.sidebar-bottom > button { min-height: 44px; }
+.button-outline:hover:not(:disabled) { border-color: #a8c5a8; background: #f3f8f0; }
+input::placeholder,
+textarea::placeholder { color: #94a197; }
+.card,
+.panel { box-shadow: var(--shadow-soft); }
+
+@media (max-width: 720px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    width: 100%;
+    height: auto;
+    padding: 12px 16px 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .shell { display: block; }
+  .main { margin-left: 0; }
+  .brand { margin: 0 0 12px; font-size: 24px; }
+  .workspace-label, .sidebar-bottom { display: none; }
+  nav { flex-direction: row; gap: 5px; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { flex: 0 0 auto; justify-content: center; padding: 10px 12px; font-size: 0; }
+  nav a svg { width: 19px; height: 19px; }
+  nav a.active:after { display: none; }
+  .topbar { height: 58px; padding: 0 18px; }
+  .topbar > span { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  main { padding: 26px 18px 32px; }
+  .page-heading, .section-title { align-items: flex-start; gap: 14px; }
+  .page-heading h1 { font-size: 32px; }
+  .hero-card { min-height: 0; padding: 24px; }
+  .hero-card h2 { font-size: 23px; }
+  .field-art, .season-mark { display: none; }
+  .panel { padding: 20px; }
+  .filter-row { align-items: stretch; padding: 13px; }
+  .filter-row label { width: 100%; min-width: 0; }
+  .chat-workspace { min-height: calc(100vh - 180px); border-radius: 14px; }
+  .chat-panel { min-height: 540px; padding: 16px; }
+  footer { flex-direction: column; padding: 20px 18px; }
+  .auth { display: block; }
+  .auth-art { padding: 42px 25px; }
+  .auth-art h1 { font-size: 38px; }
+  .auth form { padding: 42px 25px; }
+  .document-list article { align-items: flex-start; flex-wrap: wrap; }
+  .document-list article > div { min-width: calc(100% - 35px); }
+}

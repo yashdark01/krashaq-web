@@ -56,33 +56,32 @@ function Dashboard() {
     <>
       <div className="page-heading dashboard-heading">
         <div>
-          <div className="dashboard-kicker"><span className="eyebrow">A NEW PERSPECTIVE ON YOUR LAND</span><Badge variant="secondary"><span className="status-dot" /> Today</Badge></div>
+          <div className="dashboard-kicker"><span className="eyebrow">{t('A NEW PERSPECTIVE ON YOUR LAND')}</span><Badge variant="secondary"><span className="status-dot" /> {t('Today')}</Badge></div>
           <h1>
-            Good things grow
+            {t('Good things grow')}
             <br />
-            from better decisions.
+            {t('from better decisions.')}
           </h1>
           <p className="muted">
-            Your farm, your weather, and a little help with what comes next.
+            {t('Your farm, your weather, and a little help with what comes next.')}
           </p>
         </div>
         <div className="season-mark" aria-hidden="true">
           <Sprout size={72} />
-          <span>GROW WITH CONFIDENCE</span>
+          <span>{t('GROW WITH CONFIDENCE')}</span>
         </div>
       </div>
       <Card className="hero-card dashboard-hero">
         <CardContent>
           <div>
-            <span className="eyebrow">YOUR FARM COMPANION</span>
+            <span className="eyebrow">{t('YOUR FARM COMPANION')}</span>
 <h2>
                 {t('Every season brings questions.')}
               </h2>
             <p>
-              Ask about your farm&apos;s forecast or explore trusted agricultural
-              knowledge.
+              {t("Ask about your farm's forecast or explore trusted agricultural knowledge.")}
             </p>
-            <Button asChild><Link href="/krashaq-ai">Ask Krashaq <ArrowUpRight data-icon="inline-end" /></Link></Button>
+            <Button asChild><Link href="/krashaq-ai">{t('Ask Krashaq')} <ArrowUpRight data-icon="inline-end" /></Link></Button>
           </div>
           <div className="field-art" aria-hidden="true">
             <i />

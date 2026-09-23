@@ -27,6 +27,7 @@ import { setLocale } from '@/features/ui/ui.slice';
 import { api } from '@/lib/api/platform.api';
 import { mutate } from '@/lib/api/http-client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useT } from '@/lib/i18n';
 
 const navigation = [
   ['/krashaq-ai', 'Krashaq AI', 'कृषि AI', MessageCircle],
@@ -54,6 +55,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
   const copy = shellCopy[locale];
+  const t = useT();
 
   useEffect(() => {
     document.documentElement.lang = locale === 'hi' ? 'hi-IN' : 'en-IN';
@@ -108,8 +110,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </nav>
         <div className="sidebar-bottom">
-          <div className="sidebar-tip"><span>FIELD NOTE</span><strong>Small steps make stronger farms.</strong></div>
-          <div className="small-brand">GROWING BETTER, TOGETHER.</div>
+          <div className="sidebar-tip"><span>{t('FIELD NOTE')}</span><strong>{t('Small steps make stronger farms.')}</strong></div>
+          <div className="small-brand">{t('GROWING BETTER, TOGETHER.')}</div>
           <div className="sidebar-profile profile-menu">
             <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
               <span className="avatar">{initial}</span><span className="profile-name">{copy.profile}</span>
@@ -133,7 +135,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Button>
           <Button variant="ghost" className="mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu /></Button>
           <div className="topbar-context">
-            <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>
+            <span className="topbar-kicker">{t('FARM INTELLIGENCE')} <span className="top-dot">/</span> {t('YOUR DAILY PERSPECTIVE')}</span>
             <nav className="topbar-links" aria-label="Quick navigation">
               <Link href="/dashboard" className={pathname === '/dashboard' ? 'active' : ''} aria-current={pathname === '/dashboard' ? 'page' : undefined}><LayoutDashboard /> <span>{copy.overview}</span></Link>
               <Link href="/weather" className={pathname.startsWith('/weather') ? 'active' : ''} aria-current={pathname.startsWith('/weather') ? 'page' : undefined}><CloudSun /> <span>{copy.weather}</span></Link>

@@ -129,6 +129,7 @@ function ThreadSidebar({
   onSelect: (id: string) => void;
   onNew: () => void;
 }) {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [archived, setArchived] = useState(false);
   const [editing, setEditing] = useState<string>();
@@ -162,7 +163,7 @@ function ThreadSidebar({
       aria-label="Conversation history"
     >
       <div className="chat-thread-head">
-        {!collapsed && <strong>Conversations</strong>}
+        {!collapsed && <strong>{t('Conversations')}</strong>}
         <button
           type="button"
           onClick={onToggle}
@@ -181,7 +182,7 @@ function ThreadSidebar({
       </div>
       <button type="button" className="chat-new-thread" onClick={onNew}>
         <Plus size={17} />
-        {!collapsed && 'New conversation'}
+        {!collapsed && t('New conversation')}
       </button>
       {!collapsed && (
         <>
@@ -191,7 +192,7 @@ function ThreadSidebar({
               aria-label="Search conversations"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search conversations"
+              placeholder={t('Search conversations')}
             />
           </label>
           <div className="chat-thread-filter">
@@ -200,20 +201,20 @@ function ThreadSidebar({
               className={!archived ? 'active' : ''}
               onClick={() => setArchived(false)}
             >
-              Recent
+              {t('Recent')}
             </button>
             <button
               type="button"
               className={archived ? 'active' : ''}
               onClick={() => setArchived(true)}
             >
-              Archived
+              {t('Archived')}
             </button>
           </div>
           <div className="chat-thread-list">
             {isFetching && !data && (
               <div className="chat-thread-loading">
-                <Spinner size={16} /> Loading
+                <Spinner size={16} /> {t('Loading')}
               </div>
             )}
             {data?.threads.map((thread) => (

@@ -2138,6 +2138,13 @@ nav a svg { flex: 0 0 auto; }
 .topbar-overview:hover, .topbar-overview.active { border-color: #bcd2b6; color: var(--green); background: #edf7e9; }
 .topbar-overview:hover { transform: translateY(-1px); }
 .profile-menu { position: relative; }
+.sidebar-profile { margin-top: 12px; }
+.sidebar-profile .profile-trigger { width: 100%; justify-content: flex-start; padding: 7px 10px 7px 7px; }
+.sidebar-profile .profile-name { color: #506956; }
+.sidebar-profile .profile-popover { top: auto; right: auto; bottom: calc(100% + 10px); left: 0; }
+.shell.sidebar-collapsed .sidebar-profile .profile-trigger { justify-content: center; padding-inline: 10px; }
+.shell.sidebar-collapsed .sidebar-profile .profile-name { display: none; }
+.shell.sidebar-collapsed .sidebar-profile .profile-popover { left: 62px; bottom: 0; }
 .profile-trigger { display: inline-flex; align-items: center; gap: 8px; padding: 3px 8px 3px 3px; border: 1px solid transparent; border-radius: 12px; color: #5d7562; background: transparent; cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
 .profile-trigger:hover, .profile-trigger[aria-expanded="true"] { border-color: #dce7d7; background: #f3f8f1; }
 .profile-name { max-width: 82px; }

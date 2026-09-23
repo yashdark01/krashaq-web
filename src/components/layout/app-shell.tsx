@@ -98,6 +98,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-tip"><span>FIELD NOTE</span><strong>Small steps make stronger farms.</strong></div>
+          <div className="sidebar-profile profile-menu">
+            <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
+              <span className="avatar">{initial}</span><span className="profile-name">Profile</span>
+            </button>
+            {profileOpen && (
+              <div className="profile-popover" role="menu">
+                <div className="profile-popover-heading"><span className="avatar">{initial}</span><div><strong>Your profile</strong><small>Personal workspace</small></div></div>
+                <Link href="/settings" role="menuitem" onClick={() => setProfileOpen(false)}><Settings /> Settings</Link>
+                <Link href="/knowledge" role="menuitem" onClick={() => setProfileOpen(false)}><BookOpen /> Knowledge</Link>
+                <Link href="/reference-records" role="menuitem" onClick={() => setProfileOpen(false)}><ScrollText /> Schemes</Link>
+                <button className="profile-menu-action" role="menuitem" onClick={() => { setProfileOpen(false); void logout(); }}><LogOut /> Sign out</button>
+              </div>
+            )}
+          </div>
           <div className="small-brand">GROWING BETTER, TOGETHER.</div>
         </div>
       </aside>
@@ -117,20 +131,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>
-            <div className="profile-menu">
-              <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
-                <span className="avatar">{initial}</span>
-              </button>
-              {profileOpen && (
-                <div className="profile-popover" role="menu">
-                  <div className="profile-popover-heading"><span className="avatar">{initial}</span><div><strong>Your profile</strong><small>Personal workspace</small></div></div>
-                  <Link href="/settings" role="menuitem" onClick={() => setProfileOpen(false)}><Settings /> Settings</Link>
-                  <Link href="/knowledge" role="menuitem" onClick={() => setProfileOpen(false)}><BookOpen /> Knowledge</Link>
-                  <Link href="/reference-records" role="menuitem" onClick={() => setProfileOpen(false)}><ScrollText /> Schemes</Link>
-                  <button className="profile-menu-action" role="menuitem" onClick={() => { setProfileOpen(false); void logout(); }}><LogOut /> Sign out</button>
-                </div>
-              )}
-            </div>
+
           </div>
         </header>
         <main id="main-content">

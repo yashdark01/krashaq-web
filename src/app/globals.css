@@ -170,6 +170,11 @@ nav a,
   border-radius: 7px;
   font-weight: 500;
 }
+nav a[href="/farms"] {
+  margin-top: 10px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
 nav a.active {
   background: #edf4e8;
   color: #2f714e;
@@ -1081,6 +1086,7 @@ footer { margin-top: 28px; }
 }
 .chat-thread-sidebar {
   width: 250px;
+  min-width: 250px;
   flex: 0 0 250px;
   display: flex;
   flex-direction: column;

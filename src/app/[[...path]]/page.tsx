@@ -12,7 +12,9 @@ import {
   Plus,
   ExternalLink,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FarmMap } from '@/components/farm-map';
 import {
   api,
@@ -50,9 +52,9 @@ function Dashboard() {
   }, [data?.farms.length, role, router]);
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading dashboard-heading">
         <div>
-          <span className="eyebrow">A NEW PERSPECTIVE ON YOUR LAND</span>
+          <div className="dashboard-kicker"><span className="eyebrow">A NEW PERSPECTIVE ON YOUR LAND</span><Badge variant="secondary"><span className="status-dot" /> Today</Badge></div>
           <h1>
             Good things grow
             <br />
@@ -62,58 +64,40 @@ function Dashboard() {
             Your farm, your weather, and a little help with what comes next.
           </p>
         </div>
-        <div className="season-mark">
+        <div className="season-mark" aria-hidden="true">
           <Sprout size={72} />
           <span>GROW WITH CONFIDENCE</span>
         </div>
       </div>
-      <div className="hero-card">
-        <div>
-          <span className="eyebrow">YOUR FARM COMPANION</span>
-          <h2>
-            Every season brings questions.
-            <br />
-            Let’s find your answers.
-          </h2>
-          <p>
-            Ask about your farm’s forecast or explore trusted agricultural
-            knowledge.
-          </p>
-          <Link className="button button-primary" href="/krashaq-ai">
-            Ask Krashaq <ArrowUpRight size={16} />
-          </Link>
-        </div>
-        <div className="field-art">
-          <i />
-          <i />
-          <i />
-          <i />
-          <Sprout size={90} />
-        </div>
-      </div>
-      <div className="cards">
-        <Link className="card" href="/farms">
-          <MapPin />
-          <span>YOUR LAND</span>
-          <h2>{data?.farms.length ?? '—'} farms</h2>
-          <p>Keep your location and crops up to date.</p>
-        </Link>
-        <Link className="card" href="/weather">
-          <CloudSun />
-          <span>THE DAYS AHEAD</span>
-          <h2>Local weather</h2>
-          <p>
-            {profile?.active_farm_id
-              ? 'Explore the forecast for your selected farm.'
-              : 'Select a farm to see local forecasts.'}
-          </p>
-        </Link>
-        <Link className="card" href="/alerts">
-          <Bell />
-          <span>STAY A STEP AHEAD</span>
-          <h2>Farm alerts</h2>
-          <p>Updates relevant to your land and crops.</p>
-        </Link>
+      <Card className="hero-card dashboard-hero">
+        <CardContent>
+          <div>
+            <span className="eyebrow">YOUR FARM COMPANION</span>
+            <h2>
+              Every season brings questions.
+              <br />
+              Let&apos;s find your answers.
+            </h2>
+            <p>
+              Ask about your farm&apos;s forecast or explore trusted agricultural
+              knowledge.
+            </p>
+            <Button asChild><Link href="/krashaq-ai">Ask Krashaq <ArrowUpRight data-icon="inline-end" /></Link></Button>
+          </div>
+          <div className="field-art" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+            <Sprout size={90} />
+          </div>
+        </CardContent>
+      </Card>
+      <div className="dashboard-section-heading"><div><span className="eyebrow">YOUR FARM AT A GLANCE</span><h2>Everything important, in one place.</h2></div><Link href="/farms" className="text-link">Manage your farms <ArrowUpRight /></Link></div>
+      <div className="cards dashboard-cards">
+        <Card className="dashboard-card"><CardHeader><div className="dashboard-card-icon"><MapPin /></div><CardTitle><span>YOUR LAND</span>{data?.farms.length ?? '—'} farms</CardTitle></CardHeader><CardContent><p>Keep your location and crops up to date.</p><Link href="/farms" className="text-link">View farms <ArrowUpRight /></Link></CardContent></Card>
+        <Card className="dashboard-card"><CardHeader><div className="dashboard-card-icon"><CloudSun /></div><CardTitle><span>THE DAYS AHEAD</span>Local weather</CardTitle></CardHeader><CardContent><p>{profile?.active_farm_id ? 'Explore the forecast for your selected farm.' : 'Select a farm to see local forecasts.'}</p><Link href="/weather" className="text-link">Open forecast <ArrowUpRight /></Link></CardContent></Card>
+        <Card className="dashboard-card"><CardHeader><div className="dashboard-card-icon"><Bell /></div><CardTitle><span>STAY A STEP AHEAD</span>Farm alerts</CardTitle></CardHeader><CardContent><p>Updates relevant to your land and crops.</p><Link href="/alerts" className="text-link">Review alerts <ArrowUpRight /></Link></CardContent></Card>
       </div>
     </>
   );

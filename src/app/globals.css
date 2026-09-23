@@ -2036,6 +2036,23 @@ nav a svg { flex: 0 0 auto; }
   .chat-empty-state, .chat-starters .button { animation: none; transition: none; }
 }
 
+.farms-heading { align-items: flex-end; }
+.farms-heading h1 { margin-bottom: 6px; }
+.farms-heading > div > .muted { margin: 0; }
+.farms-kicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.farms-kicker .badge { gap: 6px; color: #357653; border-color: #d6e5d1; background: #f1f8ed; }
+.farms-grid { align-items: stretch; }
+.farm-card { min-height: 214px; border-color: #dce7d7; border-radius: 20px; background: rgba(255,255,255,.76); box-shadow: 0 12px 36px rgba(37,75,46,.055); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.farm-card:hover { transform: translateY(-4px); border-color: #bcd2b6; box-shadow: 0 18px 42px rgba(37,75,46,.1); }
+.farm-card .card-header { display: flex; align-items: flex-start; gap: 12px; }
+.farm-card .card-title { display: flex; flex-direction: column; gap: 8px; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+.farm-card .card-title span { color: #71906e; font-family: inherit; font-size: 9px; font-weight: 800; letter-spacing: 1.4px; }
+.farm-card .card-title a { color: var(--ink); text-decoration: none; }
+.farm-card .card-title a:hover { color: var(--green); }
+.farm-card .card-content { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 22px; min-height: 112px; }
+.farm-card-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; color: var(--green); background: #edf7e9; }
+.farm-card-icon svg { width: 18px; height: 18px; }
+.farm-coordinates { margin: 0; color: #71906e; font-variant-numeric: tabular-nums; font-size: 12px; }
 .knowledge-heading { align-items: flex-end; }
 .knowledge-kicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .knowledge-kicker .badge { color: #357653; border-color: #d6e5d1; background: #f1f8ed; }

@@ -260,10 +260,11 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
   }
   return (
     <>
-      <header className="section-title">
+      <header className="section-title farms-heading">
         <div>
-          <span className="eyebrow">ROOTED IN YOUR LAND</span>
+          <div className="farms-kicker"><span className="eyebrow">ROOTED IN YOUR LAND</span><Badge variant="secondary"><span className="status-dot" /> Farm workspace</Badge></div>
           <h1>{newFarm ? 'Add your farm' : farm ? farm.name : 'My farms'}</h1>
+          <p className="muted">Keep your land, crops, and local guidance connected.</p>
         </div>
         <Link href="/farms/new" className="button button-primary">
           <Plus size={16} /> Add farm
@@ -484,19 +485,18 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
           </section>
         </>
       ) : (
-        <div className="cards">
+        <div className="cards farms-grid">
           {data?.farms.map((f) => (
-            <div className="card" key={f.id}>
-              <MapPin />
-              <h2>
-                <Link href={`/farms/${f.id}`}>{f.name}</Link>
-              </h2>
-              <p>
-                {f.latitude.toFixed(4)}, {f.longitude.toFixed(4)}
-              </p>
-              <Button
-                variant="outline"
-                onClick={async () => {
+            <Card className="farm-card" key={f.id}>
+              <CardHeader>
+                <div className="farm-card-icon"><MapPin /></div>
+                <CardTitle><span>ACTIVE LAND</span><Link href={`/farms/${f.id}`}>{f.name}</Link></CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="farm-coordinates">{f.latitude.toFixed(4)}, {f.longitude.toFixed(4)}</p>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
                   try {
                     await mutate(`farms/${f.id}/select`);
                     dispatch(selectFarm(f.id));
@@ -506,10 +506,11 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
                     setMessage(String(e));
                   }
                 }}
-              >
-                Use this farm
-              </Button>
-            </div>
+                >
+                  Use this farm
+                </Button>
+              </CardContent>
+            </Card>
           ))}
           {data?.farms.length === 0 && (
             <div className="panel">

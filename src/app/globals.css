@@ -2036,6 +2036,26 @@ nav a svg { flex: 0 0 auto; }
   .chat-empty-state, .chat-starters .button { animation: none; transition: none; }
 }
 
+.markets-heading { align-items: flex-end; }
+.markets-heading h1 { margin-bottom: 6px; }
+.markets-heading > div > .muted { margin: 0; }
+.markets-kicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.markets-kicker .badge { gap: 6px; color: #357653; border-color: #d6e5d1; background: #f1f8ed; }
+.markets-filters { align-items: end; padding: 16px 18px; border: 1px solid #dce7d7; border-radius: 18px; background: rgba(255,255,255,.62); }
+.filter-intro { margin-right: auto; }
+.filter-intro p { margin: 5px 0 0; font-size: 12px; }
+.market-card { min-height: 264px; border-color: #dce7d7; border-radius: 20px; background: rgba(255,255,255,.76); box-shadow: 0 12px 36px rgba(37,75,46,.055); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.market-card:hover, .market-card.selected { transform: translateY(-3px); border-color: #bcd2b6; box-shadow: 0 18px 42px rgba(37,75,46,.1); }
+.market-card .card-header { display: flex; flex-direction: column; gap: 16px; }
+.market-card .card-title { display: flex; flex-direction: column; gap: 7px; font-family: Georgia, serif; font-size: 24px; font-weight: 400; }
+.market-card .card-title span { color: #71906e; font-family: inherit; font-size: 10px; font-weight: 800; letter-spacing: .8px; }
+.market-card .card-content { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.market-price { color: var(--ink); font-family: Georgia, serif; font-size: 30px; font-weight: 400; }
+.market-price small { color: #71906e; font-family: inherit; font-size: 13px; }
+.market-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; margin-top: auto; }
+.market-card-actions a { display: inline-flex; align-items: center; gap: 5px; color: var(--green); font-size: 12px; font-weight: 700; text-decoration: none; }
+.market-history { margin-top: 28px; border-color: #dce7d7; border-radius: 20px; box-shadow: 0 12px 36px rgba(37,75,46,.055); }
+@media (max-width: 700px) { .markets-heading { align-items: flex-start; } .markets-filters { align-items: stretch; flex-direction: column; } .market-card-actions { align-items: flex-start; flex-direction: column; } }
 .farms-heading { align-items: flex-end; }
 .farms-heading h1 { margin-bottom: 6px; }
 .farms-heading > div > .muted { margin: 0; }

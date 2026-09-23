@@ -777,13 +777,15 @@ function Markets() {
   );
   return (
     <>
-      <header className="section-title">
+      <header className="section-title markets-heading">
         <div>
-          <span className="eyebrow">LOCAL MANDI OBSERVATIONS</span>
+          <div className="markets-kicker"><span className="eyebrow">LOCAL MANDI OBSERVATIONS</span><Badge variant="secondary"><span className="status-dot" /> Live sources</Badge></div>
           <h1>Markets</h1>
+          <p className="muted">Compare nearby mandi prices and follow the movement that matters.</p>
         </div>
       </header>
-      <div className="filter-row">
+      <div className="filter-row markets-filters">
+        <div className="filter-intro"><span className="eyebrow">FILTER OBSERVATIONS</span><p className="muted">Choose a crop to narrow the local view.</p></div>
         <label>
           Commodity
           <select
@@ -806,42 +808,17 @@ function Markets() {
       ) : (
         <div className="cards">
           {data?.markets.map((market) => (
-            <article
-              className={`card market-card${selectedMarketId === market.marketId ? ' selected' : ''}`}
-              key={market.id}
-            >
-              <div className="badge-row">
-                <span className="badge badge-source">{market.source}</span>
-                <span
-                  className={`badge ${market.stale ? 'badge-stale' : 'badge-fresh'}`}
-                >
-                  {market.stale ? 'Stale' : 'Fresh'}
-                </span>
-              </div>
-              <h2>{market.name}</h2>
-              <p>
-                {market.commodity}
-                {market.variety ? ` · ${market.variety}` : ''}
-              </p>
-              <strong>
-                {market.price.toLocaleString()} {market.unit}
-              </strong>
-              <p className="muted">
-                Observed {new Date(market.observedAt).toLocaleString()}
-                {market.state ? ` · ${market.state}` : ''}
-              </p>
-              {market.sourceUrl && (
-                <a href={market.sourceUrl} target="_blank" rel="noreferrer">
-                  View source <ExternalLink size={14} />
-                </a>
-              )}
-              <Button
-                variant="outline"
-                onClick={() => setSelectedMarketId(market.marketId)}
-              >
-                View history
-              </Button>
-            </article>
+              <Card className={`market-card${selectedMarketId === market.marketId ? ' selected' : ''}`} key={market.id}>
+                <CardHeader>
+                  <div className="badge-row"><Badge variant="outline">{market.source}</Badge><span className={`badge ${market.stale ? 'badge-stale' : 'badge-fresh'}`}>{market.stale ? 'Stale' : 'Fresh'}</span></div>
+                  <CardTitle><span>{market.commodity}{market.variety ? ` · ${market.variety}` : ''}</span>{market.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <strong className="market-price">{market.price.toLocaleString()} <small>{market.unit}</small></strong>
+                  <p className="muted">Observed {new Date(market.observedAt).toLocaleString()}{market.state ? ` · ${market.state}` : ''}</p>
+                  <div className="market-card-actions">{market.sourceUrl && <a href={market.sourceUrl} target="_blank" rel="noreferrer">View source <ExternalLink size={14} /></a>}<Button variant="outline" onClick={() => setSelectedMarketId(market.marketId)}>View history</Button></div>
+                </CardContent>
+              </Card>
           ))}
           {!data?.markets.length && (
             <div className="panel">

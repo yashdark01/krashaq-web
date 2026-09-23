@@ -841,7 +841,7 @@ export function ChatWorkspace({
                     if (id) await mutate(`farms/${id}/select`);
                   }}
                 >
-                  <option value="">No farm selected</option>
+                  <option value="">{t('No farm selected')}</option>
                   {farms?.farms.map((farm) => (
                     <option key={farm.id} value={farm.id}>
                       {farm.name}
@@ -868,7 +868,7 @@ export function ChatWorkspace({
         )}
         {mode === 'farming' && !activeFarm && (
           <div className="chat-context-warning">
-            Select a farm to use weather, mandi, and location-aware guidance.
+            {t('Select a farm to use weather, mandi, and location-aware guidance.')}
           </div>
         )}
 
@@ -879,17 +879,7 @@ export function ChatWorkspace({
               preserveScrollOnPrepend
             >
               <MessageScrollerContent>
-                {olderCursor && (
-                  <button
-                    type="button"
-                    className="chat-load-older"
-                    disabled={loadingThread}
-                    onClick={() => void loadOlder()}
-                  >
-                    {loadingThread && <Spinner size={14} />} Load earlier
-                    messages
-                  </button>
-                )}
+
                 {loadingThread && turns.length === 0 && (
                   <div className="chat-loading">
                     <Spinner /> Opening conversation…
@@ -910,7 +900,7 @@ export function ChatWorkspace({
                       <div className="chat-starters">
                         {localizedConfig.starters.map((starter) => (
                           <Button type="button" variant="outline" onClick={() => setText(starter)} key={starter}>
-                            {starter}
+                            {t(starter)}
                             <ArrowUp data-icon="inline-end" />
                           </Button>
                         ))}
@@ -1015,7 +1005,7 @@ export function ChatWorkspace({
                   void send();
                 }
               }}
-              placeholder={localizedConfig.placeholder}
+              placeholder={t(localizedConfig.placeholder)}
               disabled={Boolean(pendingApproval)}
               rows={1}
             />

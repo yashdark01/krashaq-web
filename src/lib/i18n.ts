@@ -40,9 +40,6 @@ const translations: Record<string, string> = {
   Recent: 'हाल की बातचीत',
   Archived: 'संग्रहीत',
   'What would you like to understand?': 'आप क्या समझना चाहते हैं?',
-  'What is happening on your farm?': 'आपके खेत में क्या हो रहा है?',
-  'Trusted sources': 'विश्वसनीय स्रोत',
-  'Farm-aware guidance': 'खेत के अनुसार मार्गदर्शन',
   'No matching records.': 'कोई मिलान रिकॉर्ड नहीं मिला।',
   'You’re all caught up.': 'आप पूरी तरह अपडेट हैं।',
   'YOUR GLOBAL KNOWLEDGE ASSISTANT': 'आपका वैश्विक ज्ञान सहायक',
@@ -55,6 +52,18 @@ const translations: Record<string, string> = {
   'Krashaq can make mistakes. Verify important farm and safety decisions.': 'Krashaq से गलतियाँ हो सकती हैं। खेत और सुरक्षा से जुड़े महत्वपूर्ण निर्णयों की पुष्टि करें।',
   'Your question': 'आपका सवाल',
   'Open conversations': 'बातचीत खोलें',
+  'A CONVERSATION THAT KNOWS YOUR FARM': 'आपके खेत को समझने वाली बातचीत',
+  'Farming Intelligence': 'कृषि बुद्धिमत्ता',
+  'Ask about your farm…': 'अपने खेत के बारे में पूछें…',
+  'What is happening on your farm?': 'आपके खेत में क्या हो रहा है?',
+  'Ask about crops, weather, markets, soil, or attach a crop photo.': 'फसलों, मौसम, बाज़ार, मिट्टी के बारे में पूछें या फसल की तस्वीर जोड़ें।',
+  'Will it rain on my farm tomorrow?': 'क्या कल मेरे खेत में बारिश होगी?',
+  'What is the nearest mandi price?': 'नज़दीकी मंडी का भाव क्या है?',
+  'My wheat leaves are turning yellow': 'मेरे गेहूं के पत्ते पीले हो रहे हैं',
+  'No farm selected': 'कोई खेत नहीं चुना गया',
+  'Select a farm to use weather, mandi, and location-aware guidance.': 'मौसम, मंडी और स्थान-आधारित मार्गदर्शन के लिए खेत चुनें।',
+  'Farm-aware guidance': 'खेत के अनुसार मार्गदर्शन',
+  'Trusted sources': 'विश्वसनीय स्रोत',
 };
 
 export function translate(value: string, locale: Locale) {

@@ -1009,6 +1009,48 @@ nav a:hover,
   gap: 10px;
   margin-top: 18px;
 }
+/* System-wide UI polish: calm, legible surfaces with predictable responsive behavior. */
+:root {
+  --bg: #f4f7f0;
+  --ink: #17352a;
+  --green: #246b49;
+  --green-dark: #194d35;
+  --muted: #65756a;
+  --line: #dfe8dc;
+  --soft: #edf4e9;
+  --surface: #ffffff;
+  --shadow: 0 18px 45px rgba(26, 57, 41, 0.08);
+}
+body {
+  background: radial-gradient(circle at 92% -10%, #e9f3de 0, transparent 34rem), var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+}
+::selection { background: #cfe4c8; color: var(--green-dark); }
+main { width: 100%; }
+.sidebar { box-shadow: 8px 0 28px rgba(28, 60, 43, 0.035); }
+.brand > span:first-child { color: var(--green); box-shadow: inset 0 0 0 1px #dcebd5; }
+.topbar { height: 72px; padding-inline: clamp(20px, 4vw, 56px); }
+.topbar > span { font-weight: 700; }
+.avatar { width: 38px; height: 38px; border: 1px solid #d4e4d1; font-weight: 700; }
+.page-heading { gap: 24px; margin-bottom: 30px; }
+.page-heading h1 { max-width: 720px; font-size: clamp(2.15rem, 4vw, 3.4rem); line-height: 1.08; }
+.hero-card { align-items: center; min-height: 300px; padding: clamp(28px, 4vw, 48px); background: linear-gradient(130deg, #eaf2df 0%, #e2edd5 100%); }
+.hero-card h2 { max-width: 650px; font-size: clamp(1.65rem, 3vw, 2.35rem); line-height: 1.18; }
+.hero-card p { font-size: 15px; }
+.cards { gap: 16px; }
+.card { min-height: 205px; padding: 24px; }
+.card h2 { margin-bottom: 10px; }
+.panel, .chat-panel { box-shadow: 0 8px 25px rgba(26, 57, 41, 0.045); }
+.panel > h1, .panel > h2 { line-height: 1.15; }
+input, textarea, select { min-height: 46px; border-color: #d7e2d5; transition: border-color .16s ease, box-shadow .16s ease; }
+input::placeholder, textarea::placeholder { color: #94a298; }
+input:focus, textarea:focus, select:focus { border-color: #79a885; box-shadow: 0 0 0 4px rgba(70, 135, 89, .12); outline: 0; }
+label { color: #40594a; font-weight: 600; }
+.button { min-height: 44px; }
+.button-outline { border-color: #cbdcc9; }
+footer { margin-top: 28px; }
+
 @media (prefers-reduced-motion: no-preference) {
   .hero-card {
     animation: appear 0.6s ease both;
@@ -1854,6 +1896,35 @@ input::placeholder,
 textarea::placeholder { color: #94a197; }
 .card,
 .panel { box-shadow: var(--shadow-soft); }
+
+@media (max-width: 650px) {
+  .sidebar { position: sticky; top: 0; z-index: 60; padding: 12px 14px 10px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .brand { margin-bottom: 10px; }
+  nav { gap: 4px; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { min-width: 44px; justify-content: center; padding: 10px; }
+  .topbar { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.94); }
+  .topbar > span { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  main { padding: 24px 16px 30px; }
+  .page-heading { align-items: flex-start; margin-bottom: 24px; }
+  .page-heading h1 { font-size: 2.15rem; }
+  .hero-card { min-height: 0; margin-inline: -2px; padding: 26px 22px; }
+  .cards { grid-template-columns: 1fr; gap: 12px; }
+  .card { min-height: 0; padding: 20px; }
+  .section-title { flex-wrap: wrap; }
+  .section-title .button { width: auto; }
+  .panel { margin-block: 14px; }
+  footer { gap: 8px; align-items: flex-start; }
+  .chat-workspace { margin-inline: -4px; }
+  .auth-art h1 { line-height: 1.08; }
+}
+
+@media (min-width: 651px) and (max-width: 1050px) {
+  .sidebar { width: 210px; }
+  .main { margin-left: 210px; }
+  main { padding-inline: 28px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 @media (max-width: 720px) {
   .sidebar {

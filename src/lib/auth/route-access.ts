@@ -10,8 +10,11 @@ export function isPublicRoute(pathname: string) {
 }
 
 /** Avoid carrying an external URL through the sign-in redirect. */
-export function safeNextPath(value: string | null | undefined) {
+export function safeNextPath(
+  value: string | null | undefined,
+  fallback = '/dashboard',
+) {
   if (!value || !value.startsWith('/') || value.startsWith('//'))
-    return '/dashboard';
+    return fallback;
   return value;
 }

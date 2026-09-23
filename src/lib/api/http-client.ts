@@ -51,13 +51,42 @@ async function responseData<T>(response: Response): Promise<T> {
   return data;
 }
 
+async function refreshCookies() {
+  try {
+    const token = await csrfToken();
+    const response = await fetch('/v1/auth/refresh', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { accept: 'application/json', 'x-csrf-token': token },
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function requestWithRefresh(
+  url: string,
+  init: RequestInit,
+  allowRefresh: boolean,
+) {
+  const response = await fetch(url, init);
+  if (response.status !== 401 || !allowRefresh || !(await refreshCookies()))
+    return response;
+  return fetch(url, init);
+}
+
 /** JSON GETs always use the same-origin Gateway and browser-managed HttpOnly cookies. */
 export async function getJson<T>(path: string): Promise<T> {
   return responseData<T>(
-    await fetch(apiPath(path), {
-      credentials: 'same-origin',
-      headers: { accept: 'application/json' },
-    }),
+    await requestWithRefresh(
+      apiPath(path),
+      {
+        credentials: 'same-origin',
+        headers: { accept: 'application/json' },
+      },
+      !path.startsWith('auth/'),
+    ),
   );
 }
 
@@ -74,11 +103,35 @@ export async function mutate<T>(
   };
   if (body !== undefined) headers['content-type'] = 'application/json';
   return responseData<T>(
-    await fetch(apiPath(path), {
-      method,
-      credentials: 'same-origin',
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
-    }),
+    await requestWithRefresh(
+      apiPath(path),
+      {
+        method,
+        credentials: 'same-origin',
+        headers,
+        body: body === undefined ? undefined : JSON.stringify(body),
+      },
+      !path.startsWith('auth/'),
+    ),
+  );
+}
+
+/** Multipart uploads retain browser-set boundaries while using the same CSRF and cookie policy. */
+export async function uploadMultipart<T>(
+  path: string,
+  body: FormData,
+): Promise<T> {
+  const token = await csrfToken();
+  return responseData<T>(
+    await requestWithRefresh(
+      apiPath(path),
+      {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { accept: 'application/json', 'x-csrf-token': token },
+        body,
+      },
+      true,
+    ),
   );
 }

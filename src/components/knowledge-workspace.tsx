@@ -78,7 +78,11 @@ function jobProgressStep(
 }
 
 /** Browser-side upload and document catalog. API calls stay behind the Gateway's /v1 routes. */
-export function KnowledgeWorkspace() {
+export function KnowledgeWorkspace({
+  platform = false,
+}: {
+  platform?: boolean;
+}) {
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File>();
   const [job, setJob] = useState<IngestionJob>();
@@ -86,9 +90,18 @@ export function KnowledgeWorkspace() {
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<string>();
+  const [targets, setTargets] = useState<Array<'global' | 'farming'>>([
+    'farming',
+  ]);
   async function loadDocuments() {
     try {
-      setDocuments((await getJson<DocumentsResponse>('documents')).documents);
+      setDocuments(
+        (
+          await getJson<DocumentsResponse>(
+            platform ? 'admin/documents' : 'documents',
+          )
+        ).documents,
+      );
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : 'Unable to load documents.',
@@ -149,6 +162,8 @@ export function KnowledgeWorkspace() {
         pdfBase64: await readPdf(file),
         idempotencyKey: crypto.randomUUID(),
         metadata: { source: 'user_upload' },
+        assistantTargets: targets,
+        visibility: platform ? 'platform' : 'private',
       });
       setJob({ ...created, error_code: null });
       setFile(undefined);
@@ -190,15 +205,16 @@ export function KnowledgeWorkspace() {
           <span className="eyebrow">TRUSTED KNOWLEDGE FOR YOUR FARM</span>
           <h1>Your documents</h1>
           <p className="muted">
-            Upload a text-based PDF, then ask Krashaq what it says. Your
-            documents stay in your account.
+            {platform
+              ? 'Publish trusted documents for all signed-in users.'
+              : 'Upload a text-based PDF, then choose where it can be used. Your documents stay private.'}
           </p>
         </div>
       </header>
       <div className="knowledge-layout">
         <form className="panel upload-panel" onSubmit={upload}>
           <Upload size={28} />
-          <h2>Add a PDF</h2>
+          <h2>{platform ? 'Publish a PDF' : 'Add a PDF'}</h2>
           <p>
             PDFs up to 650 KB are indexed with page-level citations. Scanned
             documents needing OCR show a clear failure.
@@ -224,13 +240,48 @@ export function KnowledgeWorkspace() {
               }}
             />
           </label>
+          <fieldset>
+            <legend>Use this document in</legend>
+            <label>
+              <input
+                type="checkbox"
+                checked={targets.includes('global')}
+                onChange={(event) =>
+                  setTargets((current) =>
+                    event.target.checked
+                      ? current.includes('global')
+                        ? current
+                        : [...current, 'global']
+                      : current.filter((target) => target !== 'global'),
+                  )
+                }
+              />{' '}
+              Krashaq AI
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={targets.includes('farming')}
+                onChange={(event) =>
+                  setTargets((current) =>
+                    event.target.checked
+                      ? current.includes('farming')
+                        ? current
+                        : [...current, 'farming']
+                      : current.filter((target) => target !== 'farming'),
+                  )
+                }
+              />{' '}
+              Farming Intelligence
+            </label>
+          </fieldset>
           {file && (
             <p className="selected-file">
               <FileText size={16} />
               {file.name} · {Math.ceil(file.size / 1024)} KB
             </p>
           )}
-          <Button disabled={uploading}>
+          <Button disabled={uploading || targets.length === 0}>
             {uploading ? (
               <>
                 <LoaderCircle className="spin" size={16} /> Uploading…

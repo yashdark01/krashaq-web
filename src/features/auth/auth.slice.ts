@@ -3,7 +3,8 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 export interface SessionIdentity {
   sub: string;
   tenantId: string;
-  sid?: string;
+  role: 'user' | 'admin';
+  expiresAt: string;
 }
 export type AuthStatus = 'checking' | 'authenticated' | 'anonymous';
 export interface AuthState {

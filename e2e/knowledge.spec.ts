@@ -33,9 +33,11 @@ test('upload a PDF, index it, answer from it, and open its page citation', async
   await page
     .getByLabel('Email')
     .fill(`rag-browser-${randomUUID()}@example.test`);
-  await page.getByLabel('Password').fill(`${randomUUID()}Aa1!`);
+  const password = `${randomUUID()}Aa1!`;
+  await page.getByLabel('Password').fill(password);
+  await page.getByLabel('Confirm').fill(password);
   await page.getByRole('button', { name: 'Create account' }).click();
-  await expect(page).toHaveURL(/dashboard/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/onboarding/, { timeout: 30_000 });
   await page.goto('/knowledge');
   await page.getByLabel('Document title').fill('Wheat irrigation guidance');
   await page.getByLabel('PDF file').setInputFiles({
@@ -55,12 +57,13 @@ test('upload a PDF, index it, answer from it, and open its page citation', async
     .getByLabel('Your question')
     .fill('What does my uploaded document say about wheat irrigation?');
   await page.getByRole('button', { name: 'Send question' }).click();
-  await expect(page.locator('.evidence summary')).toContainText(
-    'Wheat irrigation guidance',
-    { timeout: 250000 },
-  );
-  await expect(page.locator('.evidence summary')).toContainText('page 1');
+  const assistant = page.getByLabel('Assistant response').last();
+  await expect(assistant).not.toBeEmpty({ timeout: 250000 });
+  await assistant.getByRole('button', { name: /source/ }).click();
+  const source = page.getByLabel('Source 1');
+  await expect(source).toContainText('Wheat irrigation guidance');
+  await expect(source).toContainText('Page 1');
   await expect(
-    page.getByRole('link', { name: 'Open cited PDF' }),
+    source.getByRole('link', { name: 'Open cited PDF' }),
   ).toHaveAttribute('href', /\/v1\/documents\/.*\/content#page=1/);
 });

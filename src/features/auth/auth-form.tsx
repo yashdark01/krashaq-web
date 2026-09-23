@@ -13,12 +13,30 @@ import { getJson, mutate } from '@/lib/api/http-client';
 import { safeNextPath } from '@/lib/auth/route-access';
 import { useAppDispatch } from '@/store/hooks';
 
-const credentialsSchema = z.object({
-  email: z.email('Enter a valid email address.'),
-  password: z.string().min(12, 'Use at least 12 characters.'),
-});
+const credentialsSchema = z
+  .object({
+    email: z.email('Enter a valid email address.'),
+    password: z.string().min(12, 'Use at least 12 characters.'),
+    confirmPassword: z.string().optional(),
+  })
+  .superRefine((value, context) => {
+    if (
+      value.confirmPassword !== undefined &&
+      value.password !== value.confirmPassword
+    )
+      context.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Passwords do not match.',
+      });
+  });
 type Credentials = z.infer<typeof credentialsSchema>;
-type SessionIdentity = { sub: string; tenantId: string; sid?: string };
+type SessionIdentity = {
+  sub: string;
+  tenantId: string;
+  role: 'user' | 'admin';
+  expiresAt: string;
+};
 
 const delay = (milliseconds: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
@@ -63,12 +81,26 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   async function submit(input: Credentials) {
     setError('');
     try {
-      if (isSignUp) await mutate('auth/register', input);
-      await mutate('auth/login', input);
+      if (isSignUp && input.confirmPassword !== input.password) {
+        setError('Passwords do not match.');
+        return;
+      }
+      const credentials = { email: input.email, password: input.password };
+      if (isSignUp) await mutate('auth/register', credentials);
+      await mutate('auth/login', credentials);
       const identity = await getJson<SessionIdentity>('auth/me');
       if (isSignUp) await waitForProfile();
       dispatch(authenticated(identity));
-      router.replace(safeNextPath(search.get('next')));
+      router.replace(
+        safeNextPath(
+          search.get('next'),
+          identity.role === 'admin'
+            ? '/admin/users'
+            : isSignUp
+              ? '/onboarding'
+              : '/dashboard',
+        ),
+      );
       router.refresh();
     } catch (reason) {
       setError(messageFor(reason));
@@ -113,6 +145,22 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
         {errors.password && (
           <p role="alert" className="error">
             {errors.password.message}
+          </p>
+        )}
+        {isSignUp && (
+          <label>
+            Confirm
+            <input
+              type="password"
+              autoComplete="new-password"
+              required
+              {...register('confirmPassword')}
+            />
+          </label>
+        )}
+        {errors.confirmPassword && (
+          <p role="alert" className="error">
+            {errors.confirmPassword.message}
           </p>
         )}
         {error && (

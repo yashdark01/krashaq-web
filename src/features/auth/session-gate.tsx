@@ -11,7 +11,12 @@ import {
 import { getJson, mutate, type ApiError } from '@/lib/api/http-client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
-type SessionIdentity = { sub: string; tenantId: string; sid?: string };
+type SessionIdentity = {
+  sub: string;
+  tenantId: string;
+  role: 'user' | 'admin';
+  expiresAt: string;
+};
 
 function isUnauthenticated(error: unknown) {
   return (
@@ -30,6 +35,7 @@ export function SessionGate({ children }: { children: React.ReactNode }) {
   const search = useSearchParams();
   const searchString = search.toString();
   const status = useAppSelector((state) => state.auth.status);
+  const identity = useAppSelector((state) => state.auth.identity);
   const [retry, setRetry] = useState(0);
   const [unavailable, setUnavailable] = useState(false);
   useEffect(() => {
@@ -66,6 +72,25 @@ export function SessionGate({ children }: { children: React.ReactNode }) {
       active = false;
     };
   }, [dispatch, pathname, retry, router, searchString]);
+  useEffect(() => {
+    if (status !== 'authenticated' || !identity) return;
+    const delay = Math.max(
+      1_000,
+      Date.parse(identity.expiresAt) - Date.now() - 60_000,
+    );
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          await mutate('auth/refresh');
+          dispatch(authenticated(await getJson<SessionIdentity>('auth/me')));
+        } catch {
+          dispatch(anonymous());
+          router.replace('/sign-in');
+        }
+      })();
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [dispatch, identity, router, status]);
   if (status === 'authenticated') return <>{children}</>;
   if (unavailable)
     return (

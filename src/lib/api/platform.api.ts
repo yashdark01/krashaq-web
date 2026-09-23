@@ -1,4 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  fetchBaseQuery,
+  type BaseQueryFn,
+  type FetchArgs,
+  type FetchBaseQueryError,
+} from '@reduxjs/toolkit/query/react';
+import { mutate } from './http-client';
 
 export interface Farm {
   id: string;
@@ -99,26 +106,88 @@ export interface NotificationStatus {
   provider_id?: string | null;
   delivered_at?: string | null;
 }
+export type AssistantMode = 'global' | 'farming';
+export interface ChatEvidence {
+  id: string;
+  sourceType?: 'knowledge' | 'tool' | 'web' | 'database' | 'internal';
+  sourceName: string;
+  content?: string;
+  retrievedAt: string;
+  score?: number;
+  metadata?: {
+    url?: string;
+    documentId?: string;
+    page?: number | string;
+    visibility?: 'private' | 'platform';
+    indexedAt?: string;
+    publishedAt?: string;
+    effectiveTo?: string;
+    grade?: string;
+  };
+}
+export interface ChatRun {
+  id: string;
+  input: string;
+  answer?: string | null;
+  status: string;
+  route?: string | null;
+  imageIds: string[];
+  createdAt: string;
+  feedback?: number | null;
+  evidence: ChatEvidence[];
+}
+export interface ThreadSummary {
+  id: string;
+  domain: string;
+  assistantMode: AssistantMode;
+  title: string;
+  pinned: boolean;
+  archived: boolean;
+  createdAt: string;
+  lastActivityAt: string;
+}
+export interface ThreadDetail extends ThreadSummary {
+  runs: ChatRun[];
+  nextCursor: string | null;
+}
+
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: '/v1/',
+  credentials: 'same-origin',
+  prepareHeaders: (headers) => {
+    const token =
+      typeof document === 'undefined'
+        ? undefined
+        : document.cookie
+            .split(';')
+            .map((value) => value.trim())
+            .find((value) => value.startsWith('csrf_token='))
+            ?.slice('csrf_token='.length);
+    if (token) headers.set('x-csrf-token', decodeURIComponent(token));
+    return headers;
+  },
+});
+
+/** Read queries retry once after a stateless refresh replaces an expired access cookie. */
+const baseQueryWithRefresh: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const result = await rawBaseQuery(args, api, extraOptions);
+  if (result.error?.status !== 401) return result;
+  try {
+    await mutate('auth/refresh');
+  } catch {
+    return result;
+  }
+  return rawBaseQuery(args, api, extraOptions);
+};
 
 /** Read-only browser cache. Writes use the CSRF-protected mutate() client. */
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/v1/',
-    credentials: 'same-origin',
-    prepareHeaders: (headers) => {
-      const token =
-        typeof document === 'undefined'
-          ? undefined
-          : document.cookie
-              .split(';')
-              .map((value) => value.trim())
-              .find((value) => value.startsWith('csrf_token='))
-              ?.slice('csrf_token='.length);
-      if (token) headers.set('x-csrf-token', decodeURIComponent(token));
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithRefresh,
   tagTypes: [
     'Farms',
     'Profile',
@@ -129,6 +198,7 @@ export const api = createApi({
     'Alerts',
     'AlertPreferences',
     'Notifications',
+    'Threads',
   ],
   endpoints: (build) => ({
     farms: build.query<{ farms: Farm[] }, void>({
@@ -139,8 +209,53 @@ export const api = createApi({
       query: () => 'profile',
       providesTags: ['Profile'],
     }),
-    threads: build.query<{ threads: { id: string; domain: string }[] }, void>({
-      query: () => 'threads',
+    threads: build.query<
+      { threads: ThreadSummary[]; nextCursor: string | null },
+      {
+        assistantMode: AssistantMode;
+        q?: string;
+        archived?: boolean;
+        cursor?: string;
+        limit?: number;
+      }
+    >({
+      query: (params) => ({ url: 'threads', params }),
+      providesTags: (result) => [
+        'Threads',
+        ...(result?.threads.map((thread) => ({
+          type: 'Threads' as const,
+          id: thread.id,
+        })) ?? []),
+      ],
+    }),
+    thread: build.query<
+      ThreadDetail,
+      { id: string; before?: string; limit?: number }
+    >({
+      query: ({ id, ...params }) => ({ url: `threads/${id}`, params }),
+      providesTags: (_result, _error, input) => [
+        { type: 'Threads', id: input.id },
+      ],
+    }),
+    updateThread: build.mutation<
+      { thread: ThreadSummary },
+      { id: string; title?: string; pinned?: boolean; archived?: boolean }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `threads/${id}`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, input) => [
+        'Threads',
+        { type: 'Threads', id: input.id },
+      ],
+    }),
+    submitFeedback: build.mutation<
+      { accepted: true },
+      { runId: string; rating: -1 | 1; comment?: string }
+    >({
+      query: (body) => ({ url: 'feedback', method: 'POST', body }),
     }),
     alerts: build.query<{ alerts: AlertRecord[] }, void>({
       query: () => 'alerts',
@@ -220,6 +335,9 @@ export const {
   useFarmsQuery,
   useProfileQuery,
   useThreadsQuery,
+  useLazyThreadQuery,
+  useUpdateThreadMutation,
+  useSubmitFeedbackMutation,
   useAlertsQuery,
   useAlertPreferencesQuery,
   useNotificationQuery,

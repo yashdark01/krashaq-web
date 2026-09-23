@@ -14,6 +14,7 @@ import {
   Sprout,
   Store,
   ScrollText,
+  ShieldCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { anonymous } from '@/features/auth/auth.slice';
@@ -24,7 +25,8 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const navigation = [
   ['/dashboard', 'Overview', LayoutDashboard],
-  ['/chat', 'Ask Krashaq', MessageCircle],
+  ['/krashaq-ai', 'Krashaq AI', MessageCircle],
+  ['/farming-intelligence', 'Farming Intelligence', Sprout],
   ['/knowledge', 'Knowledge', BookOpen],
   ['/farms', 'My farms', MapPin],
   ['/weather', 'Weather', CloudSun],
@@ -39,6 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const locale = useAppSelector((state) => state.ui.locale);
+  const role = useAppSelector((state) => state.auth.identity?.role);
   const initial = useAppSelector(
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
@@ -74,6 +77,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {label}
             </Link>
           ))}
+          {role === 'admin' && (
+            <>
+              <Link
+                className={pathname === '/admin/users' ? 'active' : ''}
+                href="/admin/users"
+              >
+                <ShieldCheck size={18} /> Administration
+              </Link>
+              <Link
+                className={pathname === '/admin/knowledge' ? 'active' : ''}
+                href="/admin/knowledge"
+              >
+                <BookOpen size={18} /> Knowledge library
+              </Link>
+            </>
+          )}
         </nav>
         <div className="sidebar-bottom">
           <Link href="/settings">

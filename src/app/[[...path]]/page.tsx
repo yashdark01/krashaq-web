@@ -1,12 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { consumeRunEvents, type RunEvent } from '@/lib/stream';
-import {
-  ApprovalPanel,
-  type PendingApproval,
-} from '@/features/chat/approval-panel';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Sprout,
@@ -14,10 +9,7 @@ import {
   CloudSun,
   Bell,
   ArrowUpRight,
-  ArrowUp,
-  Square,
   Plus,
-  BookOpen,
   ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,7 +18,6 @@ import {
   api,
   useFarmsQuery,
   useProfileQuery,
-  useThreadsQuery,
   useAlertsQuery,
   useAlertPreferencesQuery,
   useNotificationQuery,
@@ -35,16 +26,28 @@ import {
   useReferenceRecordsQuery,
   type AlertPreferences,
 } from '@/lib/api/platform.api';
-import { mutate } from '@/lib/api/http-client';
-import { selectFarm, setLocale } from '@/features/ui/ui.slice';
+import { getJson, mutate } from '@/lib/api/http-client';
+import {
+  clearSelectedFarm,
+  selectFarm,
+  setLocale,
+} from '@/features/ui/ui.slice';
 import type { AppDispatch, RootState } from '@/store';
 import { KnowledgeWorkspace } from '@/components/knowledge-workspace';
 import { AppShell } from '@/components/layout/app-shell';
 import { ProfileCard } from '@/features/auth/profile-card';
 import { SessionGate } from '@/features/auth/session-gate';
+import { AdminUsers } from '@/features/admin/admin-users';
+import { ChatWorkspace } from '@/features/chat/chat-workspace';
 function Dashboard() {
   const { data } = useFarmsQuery();
   const { data: profile } = useProfileQuery();
+  const router = useRouter();
+  const role = useSelector((state: RootState) => state.auth.identity?.role);
+  useEffect(() => {
+    if (role === 'user' && data?.farms.length === 0)
+      router.replace('/onboarding');
+  }, [data?.farms.length, role, router]);
   return (
     <>
       <div className="page-heading">
@@ -76,7 +79,7 @@ function Dashboard() {
             Ask about your farm’s forecast or explore trusted agricultural
             knowledge.
           </p>
-          <Link className="button button-primary" href="/chat">
+          <Link className="button button-primary" href="/krashaq-ai">
             Ask Krashaq <ArrowUpRight size={16} />
           </Link>
         </div>
@@ -115,6 +118,121 @@ function Dashboard() {
     </>
   );
 }
+function Onboarding() {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const role = useSelector((state: RootState) => state.auth.identity?.role);
+  const [name, setName] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [crop, setCrop] = useState('');
+  const [stage, setStage] = useState('');
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    if (role === 'admin') router.replace('/admin/users');
+  }, [role, router]);
+  async function complete(event: React.FormEvent) {
+    event.preventDefault();
+    setMessage('');
+    try {
+      const farm = await mutate<{ id: string }>('farms', {
+        name,
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        timezone:
+          Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
+      });
+      await mutate(`farms/${farm.id}/select`);
+      if (crop && stage)
+        await mutate(`farms/${farm.id}/crops`, { crop, stage });
+      dispatch(selectFarm(farm.id));
+      dispatch(api.util.invalidateTags(['Farms', 'Profile']));
+      router.replace('/dashboard');
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : 'Unable to save your farm.',
+      );
+    }
+  }
+  return (
+    <section className="panel form-grid">
+      <span className="eyebrow">LET’S SET UP YOUR FARM</span>
+      <h1>Start with the land you care for.</h1>
+      <p className="muted">
+        Add your first farm and we’ll tailor weather, alerts, and guidance to
+        it. Crop details are optional.
+      </p>
+      <form className="form-grid" onSubmit={complete}>
+        <label>
+          Farm name
+          <input
+            required
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="e.g. Green Valley Farm"
+          />
+        </label>
+        <label>
+          Latitude
+          <input
+            required
+            type="number"
+            min="-90"
+            max="90"
+            step="any"
+            value={latitude}
+            onChange={(event) => setLatitude(event.target.value)}
+            placeholder="20.5937"
+          />
+        </label>
+        <label>
+          Longitude
+          <input
+            required
+            type="number"
+            min="-180"
+            max="180"
+            step="any"
+            value={longitude}
+            onChange={(event) => setLongitude(event.target.value)}
+            placeholder="78.9629"
+          />
+        </label>
+        <label>
+          First crop <span className="muted">(optional)</span>
+          <input
+            value={crop}
+            onChange={(event) => setCrop(event.target.value)}
+            placeholder="e.g. Cotton"
+          />
+        </label>
+        <label>
+          Growth stage <span className="muted">(optional)</span>
+          <input
+            value={stage}
+            onChange={(event) => setStage(event.target.value)}
+            placeholder="e.g. Vegetative"
+          />
+        </label>
+        {message && (
+          <p className="error" role="alert">
+            {message}
+          </p>
+        )}
+        <Button>Finish setup</Button>
+      </form>
+    </section>
+  );
+}
+function AdminKnowledge() {
+  const router = useRouter();
+  const role = useSelector((state: RootState) => state.auth.identity?.role);
+  useEffect(() => {
+    if (role === 'user') router.replace('/dashboard');
+  }, [role, router]);
+  if (role !== 'admin') return null;
+  return <KnowledgeWorkspace platform />;
+}
 function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
   const { data, refetch, error } = useFarmsQuery();
   const dispatch = useDispatch<AppDispatch>();
@@ -125,6 +243,20 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
   const [lon, setLon] = useState('');
   const [crop, setCrop] = useState('');
   const [stage, setStage] = useState('');
+  const [details, setDetails] = useState<{
+    crops: Array<{
+      id: string;
+      crop: string;
+      stage: string;
+      planted_at?: string | null;
+    }>;
+  }>();
+  useEffect(() => {
+    if (!farm) return void setDetails(undefined);
+    void getJson<typeof details>(`farms/${farm.id}`)
+      .then(setDetails)
+      .catch(() => setDetails(undefined));
+  }, [farm?.id]);
   async function create(e: React.FormEvent) {
     e.preventDefault();
     try {
@@ -198,8 +330,88 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
             className="panel form-grid"
             onSubmit={async (e) => {
               e.preventDefault();
+              const form = new FormData(e.currentTarget);
+              try {
+                await mutate(
+                  `farms/${farm.id}`,
+                  {
+                    name: String(form.get('name')),
+                    latitude: Number(form.get('latitude')),
+                    longitude: Number(form.get('longitude')),
+                    timezone: farm.timezone,
+                  },
+                  'PATCH',
+                );
+                await refetch();
+                setMessage('Farm details saved.');
+              } catch (error) {
+                setMessage(String(error));
+              }
+            }}
+          >
+            <h2>Farm details</h2>
+            <label>
+              Farm name
+              <input name="name" required defaultValue={farm.name} />
+            </label>
+            <label>
+              Latitude
+              <input
+                name="latitude"
+                required
+                type="number"
+                min="-90"
+                max="90"
+                step="any"
+                defaultValue={farm.latitude}
+              />
+            </label>
+            <label>
+              Longitude
+              <input
+                name="longitude"
+                required
+                type="number"
+                min="-180"
+                max="180"
+                step="any"
+                defaultValue={farm.longitude}
+              />
+            </label>
+            <Button>Save changes</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={async () => {
+                if (
+                  !window.confirm(
+                    `Delete ${farm.name}? This also removes its crops.`,
+                  )
+                )
+                  return;
+                try {
+                  await mutate(`farms/${farm.id}`, undefined, 'DELETE');
+                  dispatch(clearSelectedFarm());
+                  dispatch(api.util.invalidateTags(['Profile']));
+                  await refetch();
+                  setMessage('Farm deleted.');
+                } catch (error) {
+                  setMessage(String(error));
+                }
+              }}
+            >
+              Delete farm
+            </Button>
+          </form>
+          <form
+            className="panel form-grid"
+            onSubmit={async (e) => {
+              e.preventDefault();
               try {
                 await mutate(`farms/${farm.id}/crops`, { crop, stage });
+                setCrop('');
+                setStage('');
+                setDetails(await getJson(`farms/${farm.id}`));
                 setMessage('Crop assigned.');
               } catch (e) {
                 setMessage(String(e));
@@ -225,6 +437,67 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
             </label>
             <Button>Assign crop</Button>
           </form>
+          <section className="panel">
+            <h2>Crop cycles</h2>
+            {details?.crops.length ? (
+              details.crops.map((item) => (
+                <form
+                  className="form-grid"
+                  key={item.id}
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = new FormData(e.currentTarget);
+                    try {
+                      await mutate(
+                        `farms/${farm.id}/crops/${item.id}`,
+                        {
+                          crop: String(form.get('crop')),
+                          stage: String(form.get('stage')),
+                        },
+                        'PATCH',
+                      );
+                      setDetails(await getJson(`farms/${farm.id}`));
+                      setMessage('Crop updated.');
+                    } catch (error) {
+                      setMessage(String(error));
+                    }
+                  }}
+                >
+                  <label>
+                    Crop
+                    <input name="crop" required defaultValue={item.crop} />
+                  </label>
+                  <label>
+                    Growth stage
+                    <input name="stage" required defaultValue={item.stage} />
+                  </label>
+                  <Button>Save crop</Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={async () => {
+                      if (!window.confirm(`Remove ${item.crop}?`)) return;
+                      try {
+                        await mutate(
+                          `farms/${farm.id}/crops/${item.id}`,
+                          undefined,
+                          'DELETE',
+                        );
+                        setDetails(await getJson(`farms/${farm.id}`));
+                        setMessage('Crop removed.');
+                      } catch (error) {
+                        setMessage(String(error));
+                      }
+                    }}
+                  >
+                    Remove crop
+                  </Button>
+                </form>
+              ))
+            ) : (
+              <p className="muted">No crops added yet.</p>
+            )}
+          </section>
         </>
       ) : (
         <div className="cards">
@@ -262,277 +535,6 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
           )}
         </div>
       )}
-    </>
-  );
-}
-interface Evidence {
-  id: string;
-  sourceName: string;
-  content: string;
-  retrievedAt: string;
-  metadata?: { url?: string; documentId?: string; page?: number | string };
-}
-function Chat({ weather = false }: { weather?: boolean }) {
-  const { data: farms } = useFarmsQuery();
-  const { data: profile } = useProfileQuery();
-  const { data: threads, refetch } = useThreadsQuery();
-  const selected =
-    useSelector((s: RootState) => s.ui.selectedFarmId) ||
-    profile?.active_farm_id ||
-    '';
-  const search = useSearchParams();
-  const documentId = search.get('document');
-  const [text, setText] = useState(
-    weather
-      ? 'Will it rain on my farm tomorrow?'
-      : documentId
-        ? 'What does my uploaded document say?'
-        : '',
-  );
-  const [answer, setAnswer] = useState('');
-  const [question, setQuestion] = useState('');
-  const [status, setStatus] = useState('');
-  const [error, setError] = useState('');
-  const [evidence, setEvidence] = useState<Evidence[]>([]);
-  const [threadId, setThread] = useState<string>();
-  const [running, setRunning] = useState(false);
-  const [pendingApproval, setPendingApproval] =
-    useState<PendingApproval | null>(null);
-  const run = useRef<string>('');
-  function handleStreamEvent({ type: event, data }: RunEvent) {
-    if (event === 'status') setStatus(String(data.status).replaceAll('_', ' '));
-    if (event === 'delta') setAnswer((a) => a + String(data.text));
-    if (event === 'evidence') setEvidence(data.evidence as Evidence[]);
-    if (event === 'approval_required') {
-      setPendingApproval({
-        approvalId: String(data.approvalId),
-        tool: String(data.tool),
-        expiresAt: String(data.expiresAt),
-      });
-      setStatus('approval required');
-    }
-    if (event === 'error' || event === 'context_required')
-      setError(String(data.message));
-  }
-  async function consumeEvents(eventsUrl: string) {
-    await consumeRunEvents(eventsUrl, handleStreamEvent);
-  }
-  async function send() {
-    if (!text.trim() || running) return;
-    setRunning(true);
-    setError('');
-    setAnswer('');
-    setEvidence([]);
-    setPendingApproval(null);
-    setQuestion(text);
-    try {
-      const created = await mutate<{
-        runId: string;
-        threadId: string;
-        eventsUrl: string;
-      }>('ai/chat', {
-        domain: 'krashaq-agriculture',
-        message: text,
-        ...(threadId ? { threadId } : {}),
-        ...(selected ? { resourceId: selected } : {}),
-        ...(documentId ? { documentId } : {}),
-      });
-      run.current = created.runId;
-      setThread(created.threadId);
-      await consumeEvents(created.eventsUrl);
-      await refetch();
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setRunning(false);
-      setStatus('');
-    }
-  }
-  async function resumeAfterApproval(response: {
-    runId: string;
-    threadId: string;
-    eventsUrl: string;
-  }) {
-    setRunning(true);
-    setError('');
-    setPendingApproval(null);
-    run.current = response.runId;
-    setThread(response.threadId);
-    try {
-      await consumeEvents(response.eventsUrl);
-      await refetch();
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setRunning(false);
-      setStatus('');
-    }
-  }
-  return (
-    <>
-      <header className="section-title">
-        <div>
-          <span className="eyebrow">
-            A CONVERSATION THAT KNOWS YOUR CONTEXT
-          </span>
-          <h1>{weather ? 'Your local forecast' : 'Ask Krashaq'}</h1>
-        </div>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setThread(undefined);
-            setAnswer('');
-            setQuestion('');
-            setPendingApproval(null);
-          }}
-          disabled={running}
-        >
-          <Plus size={16} /> New conversation
-        </Button>
-      </header>
-      {documentId && (
-        <div className="document-context">
-          <BookOpen size={15} />
-          Grounding this conversation in your uploaded knowledge.{' '}
-          <Link href="/knowledge">Manage documents</Link>
-        </div>
-      )}
-      <div className="context-pill">
-        <MapPin size={14} />
-        {farms?.farms.find((f) => f.id === selected)?.name
-          ? `Using ${farms.farms.find((f) => f.id === selected)?.name} location`
-          : 'No farm selected'}{' '}
-        <Link href="/farms">Change</Link>
-      </div>
-      <div className="chat-layout">
-        <div className="chat-panel">
-          {!question ? (
-            <div className="chat-empty">
-              <Sprout size={42} />
-              <h2>What’s on your mind?</h2>
-              <p>
-                Start with your weather, your crops, or something you’d like to
-                understand.
-              </p>
-              <button
-                className="suggestion"
-                onClick={() => setText('Will it rain on my farm tomorrow?')}
-              >
-                Will it rain on my farm tomorrow? <ArrowUpRight size={16} />
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="question">{question}</div>
-              <div className="answer" aria-live="polite">
-                {answer || status || 'Connecting…'}
-              </div>
-            </>
-          )}
-          {error && (
-            <p role="alert" className="error">
-              {error}
-            </p>
-          )}
-          {pendingApproval && run.current && (
-            <ApprovalPanel
-              runId={run.current}
-              approval={pendingApproval}
-              busy={running}
-              onResume={resumeAfterApproval}
-              onDenied={() => {
-                setPendingApproval(null);
-                setAnswer('This action was denied.');
-              }}
-              onError={(message) => setError(message)}
-            />
-          )}
-          {evidence.length > 0 && (
-            <div className="evidence">
-              <span className="eyebrow">SOURCES</span>
-              {evidence.map((e) => (
-                <details key={e.id}>
-                  <summary>
-                    {e.sourceName}
-                    {e.metadata?.page
-                      ? ` · page ${e.metadata.page}`
-                      : ''} · {new Date(e.retrievedAt).toLocaleString()}
-                  </summary>
-                  <div className="evidence-links">
-                    {e.metadata?.documentId && (
-                      <a
-                        href={`/v1/documents/${encodeURIComponent(e.metadata.documentId)}/content${e.metadata.page ? `#page=${encodeURIComponent(String(e.metadata.page))}` : ''}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Open cited PDF <ExternalLink size={14} />
-                      </a>
-                    )}
-                    {e.metadata?.url && (
-                      <a href={e.metadata.url} target="_blank" rel="noreferrer">
-                        Open source <ExternalLink size={14} />
-                      </a>
-                    )}
-                  </div>
-                  <pre>{e.content}</pre>
-                </details>
-              ))}
-            </div>
-          )}
-          <form
-            className="composer"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void send();
-            }}
-          >
-            <textarea
-              aria-label="Your question"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Ask a question about your farm…"
-              rows={2}
-              disabled={Boolean(pendingApproval)}
-            />
-            {running ? (
-              <Button
-                type="button"
-                aria-label="Stop generation"
-                onClick={() => void mutate(`runs/${run.current}/cancel`)}
-              >
-                <Square size={18} />
-              </Button>
-            ) : (
-              <Button aria-label="Send question">
-                <ArrowUp size={20} />
-              </Button>
-            )}
-          </form>
-          <p className="chat-note">
-            Forecasts can change. Important decisions deserve a second look.
-          </p>
-        </div>
-        <aside className="history">
-          <span className="eyebrow">RECENT CONVERSATIONS</span>
-          {threads?.threads.map((t) => (
-            <button
-              key={t.id}
-              onClick={async () => {
-                const data = await fetch(`/v1/threads/${t.id}`).then((r) =>
-                  r.json(),
-                );
-                const last = data.runs?.at(-1);
-                setThread(t.id);
-                setQuestion(last?.input ?? '');
-                setAnswer(last?.answer ?? '');
-                setEvidence(last?.evidence ?? []);
-              }}
-            >
-              Conversation {t.id.slice(0, 6)}
-            </button>
-          ))}
-        </aside>
-      </div>
     </>
   );
 }
@@ -991,10 +993,16 @@ export default function Page() {
   return (
     <SessionGate>
       <AppShell>
-        {path === '/chat' || path === '/weather' ? (
-          <Chat weather={path === '/weather'} />
+        {path === '/chat' ||
+        path === '/farming-intelligence' ||
+        path === '/weather' ? (
+          <ChatWorkspace mode="farming" weather={path === '/weather'} />
+        ) : path === '/krashaq-ai' ? (
+          <ChatWorkspace mode="global" />
         ) : path === '/knowledge' ? (
           <KnowledgeWorkspace />
+        ) : path === '/onboarding' ? (
+          <Onboarding />
         ) : path.startsWith('/farms') ? (
           <Farms newFarm={path === '/farms/new'} id={path.split('/')[2]} />
         ) : path === '/alerts' ? (
@@ -1005,6 +1013,10 @@ export default function Page() {
           <ReferenceRecords />
         ) : path === '/profile' ? (
           <ProfileCard />
+        ) : path === '/admin/users' ? (
+          <AdminUsers />
+        ) : path === '/admin/knowledge' ? (
+          <AdminKnowledge />
         ) : path === '/settings' ? (
           <section className="panel">
             <span className="eyebrow">PREFERENCES</span>

@@ -5,17 +5,16 @@ test('register, create a located farm, assign crop and receive live weather evid
 }) => {
   await page.goto('/register');
   await page.getByLabel('Email').fill(`browser-${randomUUID()}@example.test`);
-  await page.getByLabel('Password').fill(randomUUID() + 'Aa1!');
+  const password = randomUUID() + 'Aa1!';
+  await page.getByLabel('Password').fill(password);
+  await page.getByLabel('Confirm').fill(password);
   await page.getByRole('button', { name: 'Create account' }).click();
-  await expect(page).toHaveURL(/dashboard/, { timeout: 30_000 });
-  await page.goto('/farms/new');
+  await expect(page).toHaveURL(/onboarding/, { timeout: 30_000 });
   await page.getByLabel('Farm name').fill('Browser verification farm');
   await page.getByLabel('Latitude', { exact: true }).fill('23.2599');
   await page.getByLabel('Longitude', { exact: true }).fill('77.4126');
-  await page.getByRole('button', { name: 'Create farm', exact: true }).click();
-  await expect(page.getByRole('status')).toHaveText(
-    'Farm created and selected.',
-  );
+  await page.getByRole('button', { name: 'Finish setup', exact: true }).click();
+  await expect(page).toHaveURL(/dashboard/);
   await page.goto('/farms');
   await page.getByRole('link', { name: 'Browser verification farm' }).click();
   await page.getByLabel('Crop', { exact: true }).fill('wheat');
@@ -27,11 +26,12 @@ test('register, create a located farm, assign crop and receive live weather evid
     .getByLabel('Your question')
     .fill('Will it rain on my farm tomorrow?');
   await page.getByRole('button', { name: 'Send question' }).click();
-  await expect(page.locator('.evidence summary')).toContainText(
+  const assistant = page.getByLabel('Assistant response').last();
+  await expect(assistant).not.toBeEmpty({ timeout: 250000 });
+  await assistant.getByRole('button', { name: /source/ }).click();
+  await expect(page.getByLabel('Source 1')).toContainText(
     'krashaq.weather.forecast',
-    { timeout: 250000 },
   );
-  await expect(page.locator('.answer')).not.toBeEmpty();
   await page.screenshot({
     path: 'test-results/weather-chat.png',
     fullPage: true,

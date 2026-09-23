@@ -87,6 +87,30 @@ html[data-theme='dark'] .profile-menu-action:hover { background: #243b2a; color:
 html[data-theme='dark'] input,
 html[data-theme='dark'] textarea,
 html[data-theme='dark'] select { color: var(--ink); background-color: #142019; border-color: var(--line); }
+html[data-theme='dark'] .hero-card,
+html[data-theme='dark'] .dashboard-hero { background: linear-gradient(135deg, #1c3324 0%, #14251b 100%) !important; border-color: #35513c; }
+html[data-theme='dark'] .hero-card p { color: var(--muted); }
+html[data-theme='dark'] .chat-conversation { background: #142019; }
+html[data-theme='dark'] .chat-header { background: #192a20; border-color: var(--line); }
+html[data-theme='dark'] .chat-empty-state,
+html[data-theme='dark'] .chat-empty-state p,
+html[data-theme='dark'] .chat-empty-state h2 { color: var(--ink); }
+html[data-theme='dark'] .chat-empty-state { background: #1a2b21; border-color: #34523c; }
+html[data-theme='dark'] .chat-empty-state > div:first-child { background: #294631; }
+html[data-theme='dark'] .chat-context-warning { background: #3a321d; color: #eadb9b; border-color: #61532a; }
+html[data-theme='dark'] .chat-starters .button { background: #203327; color: #d6e8d8; border-color: #416048; }
+html[data-theme='dark'] .chat-starters .button:hover { background: #2a4933; }
+html[data-theme='dark'] .chat-workspace { background: #142019; border-color: #34523c; }
+html[data-theme='dark'] .chat-composer-wrap { background: linear-gradient(transparent, #142019 18%); }
+html[data-theme='dark'] .filter-row { background: #1a2b21; border-color: #34523c; }
+html[data-theme='dark'] .chat-thread-filter button.active { background: #294631; color: var(--ink); }
+html[data-theme='dark'] .chat-composer-wrap > p { color: #9caf9f; }
+html[data-theme='dark'] .panel,
+html[data-theme='dark'] .filter-panel,
+html[data-theme='dark'] .table-card { background: #1a2b21; border-color: #34523c; }
+html[data-theme='dark'] .panel p,
+html[data-theme='dark'] .filter-panel p,
+html[data-theme='dark'] .table-card p { color: var(--muted); }
 
 body {
   margin: 0;

@@ -2133,7 +2133,12 @@ nav a svg { flex: 0 0 auto; }
 .topbar-overview svg { width: 15px; height: 15px; }
 .topbar-overview:hover, .topbar-overview.active { border-color: #bcd2b6; color: var(--green); background: #edf7e9; }
 .topbar-overview:hover { transform: translateY(-1px); }
-@media (max-width: 700px) { .topbar { min-height: 50px; height: 50px; padding: 0 14px; } .topbar-context { gap: 10px; } .topbar-kicker { display: none; } .topbar-overview { min-height: 32px; padding: 6px 9px; } }
+.topbar-links { display: flex !important; flex-direction: row !important; align-items: center; gap: 6px; flex-wrap: nowrap; }
+.topbar-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 7px 10px; border: 1px solid transparent; border-radius: 10px; color: #6d826f; font-size: 11px; font-weight: 700; text-decoration: none; transition: background .16s ease, border-color .16s ease, color .16s ease; }
+.topbar-links a svg { width: 15px; height: 15px; }
+.topbar-links a:hover, .topbar-links a.active { border-color: #d6e5d1; color: var(--green); background: #edf7e9; }
+@media (max-width: 700px) { .topbar { min-height: 50px; height: 50px; padding: 0 14px; } .topbar-context { gap: 8px; } .topbar-kicker { display: none; } .topbar-overview { min-height: 32px; padding: 6px 9px; } .topbar-links { gap: 2px; } .topbar-links a { padding: 6px 7px; } .topbar-links a span { display: none; } }
+@media (max-width: 420px) { .topbar-links { display: none; } }
 
 /* Annotated chat workspace polish: keep the welcome surface balanced within the transcript and composer. */
 .chat-workspace .mx-auto.flex.w-full.max-w-3xl {

@@ -32,8 +32,6 @@ const navigation = [
   ['/farming-intelligence', 'Farming Intelligence', Sprout],
   ['/knowledge', 'Knowledge', BookOpen],
   ['/farms', 'My farms', MapPin],
-  ['/weather', 'Weather', CloudSun],
-  ['/markets', 'Markets', Store],
   ['/reference-records', 'Schemes', ScrollText],
   ['/alerts', 'Alerts', Bell],
 ] as const;
@@ -116,6 +114,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/dashboard" className={`topbar-overview${pathname === '/dashboard' ? ' active' : ''}`} aria-current={pathname === '/dashboard' ? 'page' : undefined}>
               <LayoutDashboard /> <span>Overview</span>
             </Link>
+            <nav className="topbar-links" aria-label="Quick navigation">
+              <Link href="/weather" className={pathname.startsWith('/weather') ? 'active' : ''} aria-current={pathname.startsWith('/weather') ? 'page' : undefined}><CloudSun /> <span>Weather</span></Link>
+              <Link href="/markets" className={pathname.startsWith('/markets') ? 'active' : ''} aria-current={pathname.startsWith('/markets') ? 'page' : undefined}><Store /> <span>Markets</span></Link>
+            </nav>
           </div>
           <div>
             <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>

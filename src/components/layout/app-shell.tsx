@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 import {
   Bell,
   BookOpen,
@@ -18,6 +19,8 @@ import {
   Sprout,
   Store,
   ScrollText,
+  Sun,
+  Moon,
   ShieldCheck,
   X,
 } from 'lucide-react';
@@ -51,6 +54,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const activeTheme = theme === 'dark' ? 'dark' : 'light';
   const initial = useAppSelector(
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
@@ -61,6 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     document.documentElement.lang = locale === 'hi' ? 'hi-IN' : 'en-IN';
     document.cookie = `NEXT_LOCALE=${locale}; Path=/; Max-Age=31536000; SameSite=Lax`;
   }, [locale]);
+
   async function logout() {
     try {
       await mutate('auth/logout');
@@ -142,9 +148,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link href="/markets" className={pathname.startsWith('/markets') ? 'active' : ''} aria-current={pathname.startsWith('/markets') ? 'page' : undefined}><Store /> <span>{copy.markets}</span></Link>
             </nav>
           </div>
-          <div>
+          <div className="topbar-actions">
+            <button className="theme-toggle" onClick={() => setTheme(activeTheme === 'light' ? 'dark' : 'light')} aria-label={`Switch to ${activeTheme === 'light' ? 'dark' : 'light'} theme`}>
+              {activeTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+              <span>{activeTheme === 'light' ? 'Dark' : 'Light'}</span>
+            </button>
             <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))} aria-label="Switch language">{copy.language}</button>
-
           </div>
         </header>
         <main id="main-content">

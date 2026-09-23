@@ -40,6 +40,54 @@
 * {
   box-sizing: border-box;
 }
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #101814;
+  --ink: #e5eee6;
+  --green: #8fcf9d;
+  --green-dark: #b9e6c1;
+  --muted: #a4b5a8;
+  --line: #2b3c31;
+  --soft: #1b2b21;
+  --surface: #17231b;
+  --background: oklch(0.18 0.03 155);
+  --foreground: oklch(0.92 0.03 145);
+  --card: oklch(0.22 0.035 155);
+  --card-foreground: oklch(0.92 0.03 145);
+  --secondary: oklch(0.27 0.04 145);
+  --secondary-foreground: oklch(0.92 0.03 145);
+  --muted-foreground: oklch(0.72 0.03 145);
+  --border: oklch(0.34 0.04 145);
+  --ring: oklch(0.7 0.1 145);
+}
+html[data-theme='dark'] body { background: radial-gradient(circle at 92% -10%, #1d3b2a 0, transparent 34rem), var(--bg); }
+html[data-theme='dark'] .topbar,
+html[data-theme='dark'] .sidebar,
+html[data-theme='dark'] .card,
+html[data-theme='dark'] [class*='bg-card'],
+html[data-theme='dark'] .profile-popover,
+html[data-theme='dark'] .chat-composer,
+html[data-theme='dark'] .chat-thread-sidebar { background-color: var(--surface) !important; color: var(--ink); }
+html[data-theme='dark'] .dashboard-hero h2,
+html[data-theme='dark'] .dashboard-hero p,
+html[data-theme='dark'] .dashboard-hero .eyebrow,
+html[data-theme='dark'] .dashboard-hero .card-content { color: var(--ink); }
+html[data-theme='dark'] .dashboard-hero { border-color: var(--line); }
+html[data-theme='dark'] .badge { background: #2b4433; color: #d9f0dc; border-color: #41624b; }
+html[data-theme='dark'] .topbar-links,
+html[data-theme='dark'] .topbar-overview,
+html[data-theme='dark'] .topbar-links a.active,
+html[data-theme='dark'] .profile-trigger:hover,
+html[data-theme='dark'] .profile-trigger[aria-expanded='true'] { background: #203327; border-color: #385541; color: var(--green); }
+html[data-theme='dark'] .profile-popover a,
+html[data-theme='dark'] .profile-menu-action { color: #c6dcc9; }
+html[data-theme='dark'] .profile-popover a:hover,
+html[data-theme='dark'] .profile-menu-action:hover { background: #243b2a; color: var(--green); }
+html[data-theme='dark'] input,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] select { color: var(--ink); background-color: #142019; border-color: var(--line); }
+
 body {
   margin: 0;
   background: var(--bg);

@@ -111,7 +111,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="main">
         <header className="topbar">
           <Button variant="ghost" className="mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu /></Button>
-          <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>
+          <div className="topbar-context">
+            <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>
+            <Link href="/dashboard" className={`topbar-overview${pathname === '/dashboard' ? ' active' : ''}`} aria-current={pathname === '/dashboard' ? 'page' : undefined}>
+              <LayoutDashboard /> <span>Overview</span>
+            </Link>
+          </div>
           <div>
             <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>
             <Link href="/profile" className="avatar" aria-label="Open profile">{initial}</Link>

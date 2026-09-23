@@ -2125,6 +2125,16 @@ nav a svg { flex: 0 0 auto; }
 .document-catalog article h3 { font-family: Georgia, serif; font-weight: 400; }
 @media (max-width: 760px) { .knowledge-heading { align-items: flex-start; } .knowledge-summary { display: none; } }
 
+/* Compact application header with a direct overview shortcut. */
+.topbar { min-height: 52px; height: 52px; padding: 0 24px; }
+.topbar-context { display: flex; align-items: center; gap: 18px; min-width: 0; }
+.topbar-kicker { line-height: 1; }
+.topbar-overview { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 7px 12px; border: 1px solid #dce7d7; border-radius: 10px; color: #5d7562; background: rgba(255,255,255,.62); font-size: 11px; font-weight: 700; text-decoration: none; transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease; }
+.topbar-overview svg { width: 15px; height: 15px; }
+.topbar-overview:hover, .topbar-overview.active { border-color: #bcd2b6; color: var(--green); background: #edf7e9; }
+.topbar-overview:hover { transform: translateY(-1px); }
+@media (max-width: 700px) { .topbar { min-height: 50px; height: 50px; padding: 0 14px; } .topbar-context { gap: 10px; } .topbar-kicker { display: none; } .topbar-overview { min-height: 32px; padding: 6px 9px; } }
+
 /* Annotated chat workspace polish: keep the welcome surface balanced within the transcript and composer. */
 .chat-workspace .mx-auto.flex.w-full.max-w-3xl {
   width: min(100%, 900px);

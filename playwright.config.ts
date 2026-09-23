@@ -4,7 +4,7 @@ export default defineConfig({
   testMatch: '**/*.spec.ts',
   timeout: 300000,
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://127.0.0.1:3000',
     headless: true,
     launchOptions: {
       executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,

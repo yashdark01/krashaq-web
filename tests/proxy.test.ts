@@ -16,15 +16,11 @@ it('redirects unauthenticated private routes and admits public routes', () => {
   expect(proxy(request('/sign-in')).headers.get('location')).toBeNull();
 });
 
-it('admits a refreshable private session and keeps authenticated users off sign-in', () => {
+it('admits refreshable private sessions and does not corrupt public RSC routes', () => {
   expect(
     proxy(request('/profile', 'session_hint=1')).headers.get('location'),
   ).toBeNull();
   expect(
-    new URL(
-      proxy(request('/sign-in', 'access_token=opaque')).headers.get(
-        'location',
-      ) ?? '',
-    ).pathname,
-  ).toBe('/dashboard');
+    proxy(request('/sign-in', 'access_token=opaque')).headers.get('location'),
+  ).toBeNull();
 });

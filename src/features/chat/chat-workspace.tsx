@@ -109,6 +109,11 @@ function sourceLabel(evidence: ChatEvidence) {
   return 'Private knowledge';
 }
 
+function closeThreadMenu(target: EventTarget & HTMLElement) {
+  const menu = target.closest('details');
+  if (menu instanceof HTMLDetailsElement) menu.open = false;
+}
+
 function ThreadSidebar({
   mode,
   activeId,
@@ -253,9 +258,10 @@ function ThreadSidebar({
                     {!archived && (
                       <button
                         type="button"
-                        onClick={() =>
-                          void update(thread, { pinned: !thread.pinned })
-                        }
+                        onClick={(event) => {
+                          closeThreadMenu(event.currentTarget);
+                          void update(thread, { pinned: !thread.pinned });
+                        }}
                       >
                         <Pin size={14} />
                         {thread.pinned ? 'Unpin' : 'Pin'}
@@ -264,7 +270,8 @@ function ThreadSidebar({
                     {!archived && (
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(event) => {
+                          closeThreadMenu(event.currentTarget);
                           setEditing(thread.id);
                           setTitle(thread.title);
                         }}
@@ -275,9 +282,10 @@ function ThreadSidebar({
                     )}
                     <button
                       type="button"
-                      onClick={() =>
-                        void update(thread, { archived: !archived })
-                      }
+                      onClick={(event) => {
+                        closeThreadMenu(event.currentTarget);
+                        void update(thread, { archived: !archived });
+                      }}
                     >
                       {archived ? (
                         <RotateCcw size={14} />

@@ -20,8 +20,10 @@ export function proxy(request: NextRequest) {
     url.searchParams.set('next', `${pathname}${search}`);
     return NextResponse.redirect(url);
   }
-  if (hasSession && publicRoute)
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Do not redirect authenticated requests away from public pages here.
+  // Next client-side navigation and prefetches use RSC requests; rewriting a
+  // public RSC response to dashboard HTML corrupts the router payload. The
+  // auth forms perform their own safe post-authentication navigation.
   return NextResponse.next();
 }
 

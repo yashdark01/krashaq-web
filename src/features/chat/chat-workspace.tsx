@@ -71,6 +71,7 @@ import {
   MessageScrollerViewport,
 } from '@/components/ui/message-scroller';
 import { Spinner } from '@/components/ui/spinner';
+import { useT } from '@/lib/i18n';
 
 type LocalImage = { id: string; preview: string; expiresAt: string };
 type SelectedSource = { evidence: ChatEvidence; index: number } | null;
@@ -494,6 +495,16 @@ export function ChatWorkspace({
   weather?: boolean;
 }) {
   const config = copy[mode];
+  const t = useT();
+  const localizedConfig = {
+    ...config,
+    title: t(config.title),
+    eyebrow: t(config.eyebrow),
+    placeholder: t(config.placeholder),
+    empty: t(config.empty),
+    description: t(config.description),
+    starters: config.starters.map(t),
+  };
   const dispatch = useAppDispatch();
   const locale = useAppSelector((state) => state.ui.locale);
   const selectedFarmId = useAppSelector((state) => state.ui.selectedFarmId);
@@ -809,9 +820,9 @@ export function ChatWorkspace({
               <Menu size={20} />
             </button>
               <div>
-                <span>{config.eyebrow}</span>
+                <span>{localizedConfig.eyebrow}</span>
                 <div className="chat-title-row">
-                  <h1>{weather ? 'Your local forecast' : config.title}</h1>
+                  <h1>{weather ? 'Your local forecast' : localizedConfig.title}</h1>
                   <Badge variant="secondary"><span className="status-dot" /> Ready</Badge>
                 </div>
               </div>
@@ -863,7 +874,7 @@ export function ChatWorkspace({
         <MessageScrollerProvider autoScroll defaultScrollPosition="end">
           <MessageScroller>
             <MessageScrollerViewport
-              aria-label={`${config.title} conversation`}
+              aria-label={`${localizedConfig.title} conversation`}
               preserveScrollOnPrepend
             >
               <MessageScrollerContent>
@@ -888,15 +899,15 @@ export function ChatWorkspace({
                     <CardContent>
                       <div className="chat-empty-icon"><Sparkles size={25} /></div>
                       <p className="chat-empty-eyebrow">A BETTER WAY TO ASK</p>
-                      <h2>{config.empty}</h2>
-                      <p>{config.description}</p>
+                      <h2>{localizedConfig.empty}</h2>
+                      <p>{localizedConfig.description}</p>
                       <div className="chat-capabilities" aria-label="Assistant capabilities">
                         <Badge variant="outline">Trusted sources</Badge>
                         <Badge variant="outline">Farm-aware guidance</Badge>
                         <Badge variant="outline">Hindi + English</Badge>
                       </div>
                       <div className="chat-starters">
-                        {config.starters.map((starter) => (
+                        {localizedConfig.starters.map((starter) => (
                           <Button type="button" variant="outline" onClick={() => setText(starter)} key={starter}>
                             {starter}
                             <ArrowUp data-icon="inline-end" />
@@ -1003,7 +1014,7 @@ export function ChatWorkspace({
                   void send();
                 }
               }}
-              placeholder={config.placeholder}
+              placeholder={localizedConfig.placeholder}
               disabled={Boolean(pendingApproval)}
               rows={1}
             />

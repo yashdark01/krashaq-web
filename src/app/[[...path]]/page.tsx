@@ -41,7 +41,9 @@ import { ProfileCard } from '@/features/auth/profile-card';
 import { SessionGate } from '@/features/auth/session-gate';
 import { AdminUsers } from '@/features/admin/admin-users';
 import { ChatWorkspace } from '@/features/chat/chat-workspace';
+import { useT } from '@/lib/i18n';
 function Dashboard() {
+  const t = useT();
   const { data } = useFarmsQuery();
   const { data: profile } = useProfileQuery();
   const router = useRouter();
@@ -73,11 +75,9 @@ function Dashboard() {
         <CardContent>
           <div>
             <span className="eyebrow">YOUR FARM COMPANION</span>
-            <h2>
-              Every season brings questions.
-              <br />
-              Let&apos;s find your answers.
-            </h2>
+<h2>
+                {t('Every season brings questions.')}
+              </h2>
             <p>
               Ask about your farm&apos;s forecast or explore trusted agricultural
               knowledge.

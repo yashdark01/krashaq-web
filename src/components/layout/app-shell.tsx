@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import {
   Bell,
   BookOpen,
@@ -9,12 +10,14 @@ import {
   LayoutDashboard,
   LogOut,
   MapPin,
+  Menu,
   MessageCircle,
   Settings,
   Sprout,
   Store,
   ScrollText,
   ShieldCheck,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { anonymous } from '@/features/auth/auth.slice';
@@ -42,6 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const locale = useAppSelector((state) => state.ui.locale);
   const role = useAppSelector((state) => state.auth.identity?.role);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const initial = useAppSelector(
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
@@ -55,77 +59,66 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       router.refresh();
     }
   }
+  function closeMobileNav() {
+    setMobileOpen(false);
+  }
+
   return (
     <div className="shell">
-      <aside className="sidebar">
-        <Link href="/dashboard" className="brand">
-          <span>
-            <Sprout size={23} />
-          </span>
-          krashaq<span className="brand-dot">.</span>
-        </Link>
+      {mobileOpen && <button className="sidebar-scrim" aria-label="Close navigation" onClick={closeMobileNav} />}
+      <aside className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}>
+        <div className="sidebar-header">
+          <Link href="/dashboard" className="brand" onClick={closeMobileNav}>
+            <span><Sprout size={22} /></span>
+            krashaq<span className="brand-dot">.</span>
+          </Link>
+          <Button variant="ghost" className="mobile-close" onClick={closeMobileNav} aria-label="Close navigation">
+            <X />
+          </Button>
+        </div>
+        <div className="workspace-card">
+          <div className="workspace-icon"><Sprout /></div>
+          <div><strong>Farm workspace</strong><span>Personal dashboard</span></div>
+          <span className="workspace-status" aria-label="Workspace synced" />
+        </div>
         <p className="workspace-label">YOUR FARM WORKSPACE</p>
-        <nav>
-          {navigation.map(([href, label, Icon]) => (
-            <Link
-              className={pathname.startsWith(href) ? 'active' : ''}
-              key={href}
-              href={href}
-              aria-current={pathname.startsWith(href) ? 'page' : undefined}
-            >
-              <Icon size={18} />
-              {label}
-            </Link>
-          ))}
+        <nav aria-label="Primary navigation">
+          {navigation.map(([href, label, Icon]) => {
+            const active = pathname === href || pathname.startsWith(`${href}/`);
+            return (
+              <Link className={active ? 'active' : ''} key={href} href={href} onClick={closeMobileNav} aria-current={active ? 'page' : undefined}>
+                <Icon />
+                <span>{label}</span>
+                {label === 'Alerts' && <span className="nav-count">3</span>}
+              </Link>
+            );
+          })}
           {role === 'admin' && (
-            <>
-              <Link
-                className={pathname === '/admin/users' ? 'active' : ''}
-                href="/admin/users"
-              >
-                <ShieldCheck size={18} /> Administration
-              </Link>
-              <Link
-                className={pathname === '/admin/knowledge' ? 'active' : ''}
-                href="/admin/knowledge"
-              >
-                <BookOpen size={18} /> Knowledge library
-              </Link>
-            </>
+            <div className="nav-admin-group">
+              <p className="workspace-label">ADMINISTRATION</p>
+              <Link className={pathname === '/admin/users' ? 'active' : ''} href="/admin/users" onClick={closeMobileNav}><ShieldCheck /><span>Administration</span></Link>
+              <Link className={pathname === '/admin/knowledge' ? 'active' : ''} href="/admin/knowledge" onClick={closeMobileNav}><BookOpen /><span>Knowledge library</span></Link>
+            </div>
           )}
         </nav>
         <div className="sidebar-bottom">
-          <Link href="/settings">
-            <Settings size={18} /> Settings
-          </Link>
-          <Button variant="ghost" onClick={() => void logout()}>
-            <LogOut size={18} /> Sign out
-          </Button>
+          <div className="sidebar-tip"><span>FIELD NOTE</span><strong>Small steps make stronger farms.</strong></div>
+          <Link href="/settings" onClick={closeMobileNav}><Settings /><span>Settings</span></Link>
+          <Button variant="ghost" onClick={() => void logout()}><LogOut /><span>Sign out</span></Button>
           <div className="small-brand">GROWING BETTER, TOGETHER.</div>
         </div>
       </aside>
       <div className="main">
         <header className="topbar">
-          <span>
-            FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY
-            PERSPECTIVE
-          </span>
+          <Button variant="ghost" className="mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu /></Button>
+          <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>
           <div>
-            <button
-              className="locale"
-              onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}
-            >
-              {locale === 'en' ? 'हिन्दी' : 'English'}
-            </button>
-            <Link href="/profile" className="avatar" aria-label="Open profile">
-              {initial}
-            </Link>
+            <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>
+            <Link href="/profile" className="avatar" aria-label="Open profile">{initial}</Link>
           </div>
         </header>
         <main id="main-content">{children}</main>
-        <footer>
-          KRASHAQ AGRITECH <span>Rooted in knowledge. Growing with you.</span>
-        </footer>
+        <footer>KRASHAQ AGRITECH <span>Rooted in knowledge. Growing with you.</span></footer>
       </div>
     </div>
   );

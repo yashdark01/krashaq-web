@@ -2016,8 +2016,9 @@ nav a svg { flex: 0 0 auto; }
 .chat-empty-eyebrow { margin: 0 0 8px !important; color: #71906e !important; font-size: 9px; font-weight: 800; letter-spacing: 1.5px; }
 .chat-capabilities { display: flex !important; flex-direction: row !important; flex-wrap: wrap; justify-content: center; gap: 7px; margin: 0 0 22px; }
 .chat-capabilities .badge { color: #647c62; border-color: #dce8d8; background: rgba(255,255,255,.7); }
-.chat-starters { display: flex !important; flex-direction: column; width: 100%; min-width: 0; gap: 8px; }
-.chat-starters .button { min-width: 0; min-height: 68px; align-items: flex-start; justify-content: space-between; padding: 12px; color: var(--ink); text-align: left; white-space: normal; }
+.chat-starters { display: flex !important; flex-direction: column; align-self: stretch; width: 100%; min-width: 0; gap: 8px; }
+.chat-starters .button { display: flex; width: 100%; min-width: 0; min-height: 52px; align-items: center; justify-content: space-between; padding: 11px 13px; color: var(--ink); text-align: left; white-space: normal; }
+.chat-starters .button svg { flex: 0 0 auto; }
 .chat-workspace .chat-empty-state,
 .chat-workspace .chat-empty-state > div,
 .chat-workspace .chat-empty-state h2,
@@ -2040,23 +2041,28 @@ nav a svg { flex: 0 0 auto; }
   width: min(100%, 900px);
   max-width: 900px;
   min-height: 100%;
-  padding: 34px clamp(16px, 4vw, 42px) 28px;
-  justify-content: center;
+  padding: 28px clamp(16px, 4vw, 42px) 28px;
+  justify-content: flex-start;
 }
+.chat-workspace [role="log"] { width: 100%; min-width: 0; }
+.chat-workspace .chat-conversation { min-width: 0; }
 .chat-workspace .chat-empty-state {
   width: 100%;
   max-width: 760px;
   min-height: 280px;
-  margin: auto;
+  margin: 0 auto;
   padding: 0;
   overflow: visible;
   border-radius: 22px;
 }
 .chat-workspace .chat-empty-state > div,
-.chat-workspace .chat-empty-state > div:last-child {
+.chat-workspace .chat-empty-state > div:last-child,
+.chat-workspace .chat-empty-state .card-content {
   display: flex !important;
   flex-direction: column;
   align-items: center;
+  align-self: stretch;
+  width: 100%;
   min-height: 0;
   justify-content: center;
   padding: 24px clamp(14px, 3vw, 30px);

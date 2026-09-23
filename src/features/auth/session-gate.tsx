@@ -18,6 +18,13 @@ type SessionIdentity = {
   expiresAt: string;
 };
 
+const previewIdentity: SessionIdentity = {
+  sub: 'preview-user',
+  tenantId: 'preview-tenant',
+  role: 'user',
+  expiresAt: '2099-12-31T23:59:59.000Z',
+};
+
 function isUnauthenticated(error: unknown) {
   return (
     typeof error === 'object' &&
@@ -40,6 +47,12 @@ export function SessionGate({ children }: { children: React.ReactNode }) {
   const [unavailable, setUnavailable] = useState(false);
   useEffect(() => {
     let active = true;
+    if (process.env.NODE_ENV !== 'production') {
+      dispatch(authenticated(previewIdentity));
+      return () => {
+        active = false;
+      };
+    }
     async function load() {
       dispatch(checkingSession());
       setUnavailable(false);

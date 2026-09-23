@@ -1007,7 +1007,7 @@ export function ChatWorkspace({
               disabled={Boolean(pendingApproval)}
               rows={1}
             />
-            <div className="chat-composer-actions">
+            <div className="chat-composer-actions" aria-label="Message actions">
               <div>
                 {mode === 'farming' && (
                   <label

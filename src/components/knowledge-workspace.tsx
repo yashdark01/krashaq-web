@@ -11,6 +11,7 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { getJson, mutate } from '@/lib/api/http-client';
 
@@ -200,9 +201,9 @@ export function KnowledgeWorkspace({
   const failed = job?.status === 'failed';
   return (
     <>
-      <header className="section-title">
+      <header className="section-title knowledge-heading">
         <div>
-          <span className="eyebrow">TRUSTED KNOWLEDGE FOR YOUR FARM</span>
+          <div className="knowledge-kicker"><span className="eyebrow">TRUSTED KNOWLEDGE FOR YOUR FARM</span><Badge variant="secondary">Private by default</Badge></div>
           <h1>Your documents</h1>
           <p className="muted">
             {platform
@@ -210,6 +211,7 @@ export function KnowledgeWorkspace({
               : 'Upload a text-based PDF, then choose where it can be used. Your documents stay private.'}
           </p>
         </div>
+        <div className="knowledge-summary" aria-label="Document workflow"><span>1</span><span>Upload</span><i /> <span>2</span><span>Index</span><i /> <span>3</span><span>Ask</span></div>
       </header>
       <div className="knowledge-layout">
         <form className="panel upload-panel" onSubmit={upload}>

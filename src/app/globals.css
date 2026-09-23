@@ -2036,6 +2036,31 @@ nav a svg { flex: 0 0 auto; }
   .chat-empty-state, .chat-starters .button { animation: none; transition: none; }
 }
 
+.knowledge-heading { align-items: flex-end; }
+.knowledge-kicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.knowledge-kicker .badge { color: #357653; border-color: #d6e5d1; background: #f1f8ed; }
+.knowledge-summary { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border: 1px solid #dce7d7; border-radius: 16px; color: #71906e; background: rgba(255,255,255,.7); font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; white-space: nowrap; }
+.knowledge-summary span:nth-of-type(odd) { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: var(--green); font-size: 10px; }
+.knowledge-summary i { width: 18px; height: 1px; background: #d5e2d1; }
+.knowledge-layout { align-items: stretch; }
+.knowledge-layout .panel { border-color: #dce7d7; border-radius: 20px; box-shadow: 0 12px 36px rgba(37,75,46,.055); }
+.upload-panel { position: relative; overflow: hidden; }
+.upload-panel > svg:first-child { width: 48px; height: 48px; padding: 12px; margin-bottom: 8px; border-radius: 15px; color: var(--green); background: #edf7e9; }
+.upload-panel h2, .indexing-panel h2, .document-catalog h2 { font-family: Georgia, serif; font-weight: 400; letter-spacing: -.4px; }
+.upload-panel label { gap: 8px; }
+.upload-panel input[type="file"] { padding: 10px; border: 1px dashed #c9dac4; border-radius: 12px; background: #f8fbf6; cursor: pointer; }
+.upload-panel fieldset { padding: 14px; border: 1px solid #e1ebe0; border-radius: 14px; }
+.upload-panel fieldset label { flex-direction: row; align-items: center; gap: 8px; }
+.selected-file { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #dce7d7; border-radius: 12px; color: #527457; background: #f5faf3; font-size: 12px; }
+.indexing-panel { display: flex; flex-direction: column; gap: 18px; }
+.job-status { padding: 14px; border: 1px solid #e0ebe0; border-radius: 16px; background: #f8fbf7; }
+.job-progress { margin: 0; }
+.document-catalog { margin-top: 24px; }
+.document-catalog article { border-color: #e0e9de; border-radius: 15px; transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+.document-catalog article:hover { border-color: #bcd2b6; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(37,75,46,.07); }
+.document-catalog article h3 { font-family: Georgia, serif; font-weight: 400; }
+@media (max-width: 760px) { .knowledge-heading { align-items: flex-start; } .knowledge-summary { display: none; } }
+
 /* Annotated chat workspace polish: keep the welcome surface balanced within the transcript and composer. */
 .chat-workspace .mx-auto.flex.w-full.max-w-3xl {
   width: min(100%, 900px);

@@ -27,7 +27,6 @@ import { mutate } from '@/lib/api/http-client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const navigation = [
-  ['/dashboard', 'Overview', LayoutDashboard],
   ['/krashaq-ai', 'Krashaq AI', MessageCircle],
   ['/farming-intelligence', 'Farming Intelligence', Sprout],
   ['/knowledge', 'Knowledge', BookOpen],

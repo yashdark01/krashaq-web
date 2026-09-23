@@ -53,6 +53,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   async function logout() {
     try {
       await mutate('auth/logout');
+    } catch {
+      // Continue local sign-out when the API or CSRF endpoint is unavailable.
     } finally {
       dispatch(anonymous());
       dispatch(api.util.resetApiState());

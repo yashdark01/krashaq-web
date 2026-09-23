@@ -2036,6 +2036,33 @@ nav a svg { flex: 0 0 auto; }
   .chat-empty-state, .chat-starters .button { animation: none; transition: none; }
 }
 
+.alerts-heading { align-items: flex-end; }
+.alerts-heading h1 { margin-bottom: 6px; }
+.alerts-heading > div > .muted { margin: 0; }
+.alerts-kicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.alerts-kicker .badge { gap: 6px; color: #357653; border-color: #d6e5d1; background: #f1f8ed; }
+.alerts-preferences { border-color: #dce7d7; border-radius: 20px; background: rgba(255,255,255,.76); box-shadow: 0 12px 36px rgba(37,75,46,.055); }
+.alerts-preferences > label { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(180px, 280px); align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #edf1eb; }
+.alerts-preferences > label:last-of-type { border-bottom: 0; }
+.alerts-preferences > .button { margin-top: 14px; }
+.alert-card { margin-top: 14px; border-color: #dce7d7; border-radius: 18px; background: rgba(255,255,255,.76); box-shadow: 0 10px 28px rgba(37,75,46,.05); }
+.alert-card:hover { border-color: #bcd2b6; }
+.alert-card p { max-width: 720px; line-height: 1.6; }
+.alert-card small { color: #71906e; }
+@media (max-width: 700px) { .alerts-heading { align-items: flex-start; } .alerts-preferences > label { grid-template-columns: 1fr; gap: 8px; } }
+.schemes-heading { align-items: flex-end; }
+.schemes-heading h1 { margin-bottom: 6px; }
+.schemes-heading > div > .muted { margin: 0; }
+.schemes-kicker { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.schemes-kicker .badge { color: #357653; border-color: #d6e5d1; background: #f1f8ed; }
+.schemes-filters { align-items: end; padding: 16px 18px; border: 1px solid #dce7d7; border-radius: 18px; background: rgba(255,255,255,.62); }
+.schemes-filters label { min-width: 170px; }
+.reference-card { border-color: #dce7d7; border-radius: 20px; background: rgba(255,255,255,.76); box-shadow: 0 12px 36px rgba(37,75,46,.055); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.reference-card:hover { transform: translateY(-3px); border-color: #bcd2b6; box-shadow: 0 18px 42px rgba(37,75,46,.1); }
+.reference-card h2 { margin-top: 16px; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+.reference-card > p { max-width: 720px; line-height: 1.65; }
+.reference-card > a { display: inline-flex; align-items: center; gap: 6px; color: var(--green); font-size: 12px; font-weight: 700; text-decoration: none; }
+@media (max-width: 700px) { .schemes-heading { align-items: flex-start; } .schemes-filters { align-items: stretch; flex-direction: column; } }
 .markets-heading { align-items: flex-end; }
 .markets-heading h1 { margin-bottom: 6px; }
 .markets-heading > div > .muted { margin: 0; }

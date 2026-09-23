@@ -576,8 +576,14 @@ function Alerts() {
   }
   return (
     <>
-      <h1>Farm alerts</h1>
-      <section className="panel">
+      <header className="section-title alerts-heading">
+        <div>
+          <div className="alerts-kicker"><span className="eyebrow">STAY A STEP AHEAD</span><Badge variant="secondary"><span className="status-dot" /> Live monitoring</Badge></div>
+          <h1>Farm alerts</h1>
+          <p className="muted">Choose what deserves your attention, then act before conditions change.</p>
+        </div>
+      </header>
+      <section className="panel alerts-preferences">
         <span className="eyebrow">ALERT PREFERENCES</span>
         {preferencesError || !preferences ? (
           <p className="muted">Preferences are currently unavailable.</p>
@@ -679,8 +685,8 @@ function Alerts() {
       {error ? (
         <p className="panel">Alerts are currently unavailable.</p>
       ) : data?.alerts.length ? (
-        data.alerts.map((a) => (
-          <article className="panel" key={a.id}>
+          data.alerts.map((a) => (
+          <article className="panel alert-card" key={a.id}>
             <div className="badge-row">
               {a.hazard?.severity ? (
                 <span className="badge badge-source">{a.hazard.severity}</span>
@@ -875,13 +881,14 @@ function ReferenceRecords() {
     }) ?? [];
   return (
     <>
-      <header className="section-title">
+      <header className="section-title schemes-heading">
         <div>
-          <span className="eyebrow">AGRICULTURE REFERENCE DATA</span>
+          <div className="schemes-kicker"><span className="eyebrow">AGRICULTURE REFERENCE DATA</span><Badge variant="secondary">Verified guidance</Badge></div>
           <h1>Schemes & guidance</h1>
+          <p className="muted">Find support programmes and practical guidance matched to your land.</p>
         </div>
       </header>
-      <div className="filter-row">
+      <div className="filter-row schemes-filters">
         <label>
           State
           <select value={state} onChange={(e) => setState(e.target.value)}>
@@ -904,7 +911,7 @@ function ReferenceRecords() {
         <p className="panel">Reference records are currently unavailable.</p>
       ) : records.length ? (
         records.map((record) => (
-          <article className="panel reference-card" key={record.id}>
+          <Card className="panel reference-card" key={record.id}>
             <div className="badge-row">
               <span className="badge badge-source">
                 {record.content.dataset ?? 'reference'}
@@ -937,7 +944,7 @@ function ReferenceRecords() {
                 Published {new Date(record.published_at).toLocaleDateString()}
               </small>
             )}
-          </article>
+          </Card>
         ))
       ) : (
         <div className="panel">

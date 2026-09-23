@@ -816,15 +816,15 @@ export function ChatWorkspace({
               type="button"
               className="chat-mobile-menu"
               onClick={() => setMobileThreads(true)}
-              aria-label="Open conversations"
+              aria-label={t('Open conversations')}
             >
               <Menu size={20} />
             </button>
               <div>
-                <span>{localizedConfig.eyebrow}</span>
+                <span>{t(localizedConfig.eyebrow)}</span>
                 <div className="chat-title-row">
-                  <h1>{weather ? 'Your local forecast' : localizedConfig.title}</h1>
-                  <Badge variant="secondary"><span className="status-dot" /> Ready</Badge>
+                  <h1>{t(weather ? 'Your local forecast' : localizedConfig.title)}</h1>
+                  <Badge variant="secondary"><span className="status-dot" /> {t('Ready')}</Badge>
                 </div>
               </div>
           </div>
@@ -856,7 +856,7 @@ export function ChatWorkspace({
               onClick={resetConversation}
               disabled={running}
             >
-              <Plus size={16} /> New chat
+              <Plus size={16} /> {t('New chat')}
             </Button>
           </div>
         </header>
@@ -899,13 +899,13 @@ export function ChatWorkspace({
                   <Card className="chat-empty-state">
                     <CardContent>
                       <div className="chat-empty-icon"><Sparkles size={25} /></div>
-                      <p className="chat-empty-eyebrow">A BETTER WAY TO ASK</p>
+                      <p className="chat-empty-eyebrow">{t('A BETTER WAY TO ASK')}</p>
                       <h2>{localizedConfig.empty}</h2>
                       <p>{localizedConfig.description}</p>
                       <div className="chat-capabilities" aria-label="Assistant capabilities">
-                        <Badge variant="outline">Trusted sources</Badge>
-                        <Badge variant="outline">Farm-aware guidance</Badge>
-                        <Badge variant="outline">Hindi + English</Badge>
+                        <Badge variant="outline">{t('Trusted sources')}</Badge>
+                        <Badge variant="outline">{t('Farm-aware guidance')}</Badge>
+                        <Badge variant="outline">{t('Hindi + English')}</Badge>
                       </div>
                       <div className="chat-starters">
                         {localizedConfig.starters.map((starter) => (
@@ -1063,10 +1063,7 @@ export function ChatWorkspace({
               )}
             </div>
           </form>
-          <p>
-            Krashaq can make mistakes. Verify important farm and safety
-            decisions.
-          </p>
+          <p>{t('Krashaq can make mistakes. Verify important farm and safety decisions.')}</p>
         </div>
       </div>
       <SourcePanel

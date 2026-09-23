@@ -45,6 +45,16 @@ const translations: Record<string, string> = {
   'Farm-aware guidance': 'खेत के अनुसार मार्गदर्शन',
   'No matching records.': 'कोई मिलान रिकॉर्ड नहीं मिला।',
   'You’re all caught up.': 'आप पूरी तरह अपडेट हैं।',
+  'YOUR GLOBAL KNOWLEDGE ASSISTANT': 'आपका वैश्विक ज्ञान सहायक',
+  'Krashaq AI': 'Krashaq AI',
+  'Your local forecast': 'आपका स्थानीय पूर्वानुमान',
+  Ready: 'तैयार',
+  'New chat': 'नई चैट',
+  'A BETTER WAY TO ASK': 'पूछने का बेहतर तरीका',
+  'Hindi + English': 'हिन्दी + अंग्रेज़ी',
+  'Krashaq can make mistakes. Verify important farm and safety decisions.': 'Krashaq से गलतियाँ हो सकती हैं। खेत और सुरक्षा से जुड़े महत्वपूर्ण निर्णयों की पुष्टि करें।',
+  'Your question': 'आपका सवाल',
+  'Open conversations': 'बातचीत खोलें',
 };
 
 export function translate(value: string, locale: Locale) {

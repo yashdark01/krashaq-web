@@ -98,6 +98,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-tip"><span>FIELD NOTE</span><strong>Small steps make stronger farms.</strong></div>
+          <div className="small-brand">GROWING BETTER, TOGETHER.</div>
           <div className="sidebar-profile profile-menu">
             <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
               <span className="avatar">{initial}</span><span className="profile-name">Profile</span>
@@ -112,7 +113,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
-          <div className="small-brand">GROWING BETTER, TOGETHER.</div>
         </div>
       </aside>
       <div className="main">

@@ -52,6 +52,8 @@ const translations: Record<string, string> = {
   'Krashaq can make mistakes. Verify important farm and safety decisions.': 'Krashaq से गलतियाँ हो सकती हैं। खेत और सुरक्षा से जुड़े महत्वपूर्ण निर्णयों की पुष्टि करें।',
   'Your question': 'आपका सवाल',
   'Open conversations': 'बातचीत खोलें',
+  'Ask Krashaq AI…': 'Krashaq AI से पूछें…',
+  'Explore your documents and trusted knowledge in one conversation.': 'अपने दस्तावेज़ों और विश्वसनीय ज्ञान को एक ही बातचीत में समझें।',
   'A CONVERSATION THAT KNOWS YOUR FARM': 'आपके खेत को समझने वाली बातचीत',
   'Farming Intelligence': 'कृषि बुद्धिमत्ता',
   'Ask about your farm…': 'अपने खेत के बारे में पूछें…',

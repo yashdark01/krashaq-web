@@ -31,9 +31,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 const navigation = [
   ['/krashaq-ai', 'Krashaq AI', MessageCircle],
   ['/farming-intelligence', 'Farming Intelligence', Sprout],
-  ['/knowledge', 'Knowledge', BookOpen],
   ['/farms', 'My farms', MapPin],
-  ['/reference-records', 'Schemes', ScrollText],
   ['/alerts', 'Alerts', Bell],
 ] as const;
 
@@ -100,7 +98,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-tip"><span>FIELD NOTE</span><strong>Small steps make stronger farms.</strong></div>
-          <Button variant="ghost" onClick={() => void logout()}><LogOut /><span>Sign out</span></Button>
           <div className="small-brand">GROWING BETTER, TOGETHER.</div>
         </div>
       </aside>
@@ -122,7 +119,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>
             <div className="profile-menu">
               <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
-                <span className="avatar">{initial}</span><span className="profile-name">Profile</span>
+                <span className="avatar">{initial}</span>
               </button>
               {profileOpen && (
                 <div className="profile-popover" role="menu">
@@ -130,6 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <Link href="/settings" role="menuitem" onClick={() => setProfileOpen(false)}><Settings /> Settings</Link>
                   <Link href="/knowledge" role="menuitem" onClick={() => setProfileOpen(false)}><BookOpen /> Knowledge</Link>
                   <Link href="/reference-records" role="menuitem" onClick={() => setProfileOpen(false)}><ScrollText /> Schemes</Link>
+                  <button className="profile-menu-action" role="menuitem" onClick={() => { setProfileOpen(false); void logout(); }}><LogOut /> Sign out</button>
                 </div>
               )}
             </div>

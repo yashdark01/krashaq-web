@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Bell,
   BookOpen,
@@ -29,11 +29,16 @@ import { mutate } from '@/lib/api/http-client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const navigation = [
-  ['/krashaq-ai', 'Krashaq AI', MessageCircle],
-  ['/farming-intelligence', 'Farming Intelligence', Sprout],
-  ['/farms', 'My farms', MapPin],
-  ['/alerts', 'Alerts', Bell],
+  ['/krashaq-ai', 'Krashaq AI', 'कृषि AI', MessageCircle],
+  ['/farming-intelligence', 'Farming Intelligence', 'कृषि बुद्धिमत्ता', Sprout],
+  ['/farms', 'My farms', 'मेरे खेत', MapPin],
+  ['/alerts', 'Alerts', 'अलर्ट', Bell],
 ] as const;
+
+const shellCopy = {
+  en: { overview: 'Overview', weather: 'Weather', markets: 'Markets', profile: 'Profile', language: 'हिन्दी', workspace: 'Farm workspace', settings: 'Settings', knowledge: 'Knowledge', schemes: 'Schemes', signOut: 'Sign out' },
+  hi: { overview: 'अवलोकन', weather: 'मौसम', markets: 'बाज़ार', profile: 'प्रोफ़ाइल', language: 'English', workspace: 'कृषि कार्यक्षेत्र', settings: 'सेटिंग्स', knowledge: 'ज्ञान', schemes: 'योजनाएं', signOut: 'साइन आउट' },
+} as const;
 
 /** Reusable private application frame. Logout clears client cache but never handles token values. */
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -48,6 +53,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const initial = useAppSelector(
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
+  const copy = shellCopy[locale];
+
+  useEffect(() => {
+    document.documentElement.lang = locale === 'hi' ? 'hi-IN' : 'en-IN';
+    document.cookie = `NEXT_LOCALE=${locale}; Path=/; Max-Age=31536000; SameSite=Lax`;
+  }, [locale]);
   async function logout() {
     try {
       await mutate('auth/logout');
@@ -78,12 +89,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Button>
         </div>
         <nav aria-label="Primary navigation">
-          {navigation.map(([href, label, Icon]) => {
+          {navigation.map(([href, label, hindiLabel, Icon]) => {
             const active = pathname === href || pathname.startsWith(`${href}/`);
             return (
               <Link className={active ? 'active' : ''} key={href} href={href} onClick={closeMobileNav} aria-current={active ? 'page' : undefined}>
                 <Icon />
-                <span>{label}</span>
+                <span>{locale === 'hi' ? hindiLabel : label}</span>
                 {label === 'Alerts' && <span className="nav-count">3</span>}
               </Link>
             );
@@ -101,7 +112,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="small-brand">GROWING BETTER, TOGETHER.</div>
           <div className="sidebar-profile profile-menu">
             <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
-              <span className="avatar">{initial}</span><span className="profile-name">Profile</span>
+              <span className="avatar">{initial}</span><span className="profile-name">{copy.profile}</span>
             </button>
             {profileOpen && (
               <div className="profile-popover" role="menu">
@@ -124,13 +135,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="topbar-context">
             <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>
             <nav className="topbar-links" aria-label="Quick navigation">
-              <Link href="/dashboard" className={pathname === '/dashboard' ? 'active' : ''} aria-current={pathname === '/dashboard' ? 'page' : undefined}><LayoutDashboard /> <span>Overview</span></Link>
-              <Link href="/weather" className={pathname.startsWith('/weather') ? 'active' : ''} aria-current={pathname.startsWith('/weather') ? 'page' : undefined}><CloudSun /> <span>Weather</span></Link>
-              <Link href="/markets" className={pathname.startsWith('/markets') ? 'active' : ''} aria-current={pathname.startsWith('/markets') ? 'page' : undefined}><Store /> <span>Markets</span></Link>
+              <Link href="/dashboard" className={pathname === '/dashboard' ? 'active' : ''} aria-current={pathname === '/dashboard' ? 'page' : undefined}><LayoutDashboard /> <span>{copy.overview}</span></Link>
+              <Link href="/weather" className={pathname.startsWith('/weather') ? 'active' : ''} aria-current={pathname.startsWith('/weather') ? 'page' : undefined}><CloudSun /> <span>{copy.weather}</span></Link>
+              <Link href="/markets" className={pathname.startsWith('/markets') ? 'active' : ''} aria-current={pathname.startsWith('/markets') ? 'page' : undefined}><Store /> <span>{copy.markets}</span></Link>
             </nav>
           </div>
           <div>
-            <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>
+            <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))} aria-label="Switch language">{copy.language}</button>
 
           </div>
         </header>

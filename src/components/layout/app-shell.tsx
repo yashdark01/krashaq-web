@@ -65,7 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className={`shell${sidebarCollapsed ? ' sidebar-collapsed' : ''}${pathname === '/krashaq-ai' || pathname === '/farming-intelligence' ? ' chat-shell' : ''}`}>
+    <div className={`shell${sidebarCollapsed ? ' sidebar-collapsed' : ''}`}>
       {mobileOpen && <button className="sidebar-scrim" aria-label="Close navigation" onClick={closeMobileNav} />}
       <aside className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">

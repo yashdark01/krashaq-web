@@ -75,9 +75,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Button variant="ghost" className="mobile-close" onClick={closeMobileNav} aria-label="Close navigation">
             <X />
           </Button>
-          <Button variant="ghost" className="sidebar-collapse-toggle" onClick={() => setSidebarCollapsed((collapsed) => !collapsed)} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-pressed={sidebarCollapsed}>
-            {sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-          </Button>
         </div>
         <div className="workspace-card">
           <div className="workspace-icon"><Sprout /></div>
@@ -113,6 +110,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className="main">
         <header className="topbar">
+          <Button variant="ghost" className="topbar-collapse-toggle" onClick={() => setSidebarCollapsed((collapsed) => !collapsed)} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-pressed={sidebarCollapsed}>
+            {sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+          </Button>
           <Button variant="ghost" className="mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu /></Button>
           <div className="topbar-context">
             <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>

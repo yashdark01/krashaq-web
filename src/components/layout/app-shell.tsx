@@ -46,6 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const role = useAppSelector((state) => state.auth.identity?.role);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const initial = useAppSelector(
     (state) => state.auth.identity?.sub?.slice(0, 1).toUpperCase() ?? 'K',
   );
@@ -76,12 +77,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <X />
           </Button>
         </div>
-        <div className="workspace-card">
-          <div className="workspace-icon"><Sprout /></div>
-          <div><strong>Farm workspace</strong><span>Personal dashboard</span></div>
-          <span className="workspace-status" aria-label="Workspace synced" />
-        </div>
-        <p className="workspace-label">YOUR FARM WORKSPACE</p>
         <nav aria-label="Primary navigation">
           {navigation.map(([href, label, Icon]) => {
             const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -103,7 +98,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-tip"><span>FIELD NOTE</span><strong>Small steps make stronger farms.</strong></div>
-          <Link href="/settings" onClick={closeMobileNav}><Settings /><span>Settings</span></Link>
           <Button variant="ghost" onClick={() => void logout()}><LogOut /><span>Sign out</span></Button>
           <div className="small-brand">GROWING BETTER, TOGETHER.</div>
         </div>
@@ -116,17 +110,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Button variant="ghost" className="mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu /></Button>
           <div className="topbar-context">
             <span className="topbar-kicker">FARM INTELLIGENCE <span className="top-dot">/</span> YOUR DAILY PERSPECTIVE</span>
-            <Link href="/dashboard" className={`topbar-overview${pathname === '/dashboard' ? ' active' : ''}`} aria-current={pathname === '/dashboard' ? 'page' : undefined}>
-              <LayoutDashboard /> <span>Overview</span>
-            </Link>
             <nav className="topbar-links" aria-label="Quick navigation">
+              <Link href="/dashboard" className={pathname === '/dashboard' ? 'active' : ''} aria-current={pathname === '/dashboard' ? 'page' : undefined}><LayoutDashboard /> <span>Overview</span></Link>
               <Link href="/weather" className={pathname.startsWith('/weather') ? 'active' : ''} aria-current={pathname.startsWith('/weather') ? 'page' : undefined}><CloudSun /> <span>Weather</span></Link>
               <Link href="/markets" className={pathname.startsWith('/markets') ? 'active' : ''} aria-current={pathname.startsWith('/markets') ? 'page' : undefined}><Store /> <span>Markets</span></Link>
             </nav>
           </div>
           <div>
             <button className="locale" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>{locale === 'en' ? 'हिन्दी' : 'English'}</button>
-            <Link href="/profile" className="avatar" aria-label="Open profile">{initial}</Link>
+            <div className="profile-menu">
+              <button className="profile-trigger" onClick={() => setProfileOpen((open) => !open)} aria-label="Open profile menu" aria-expanded={profileOpen}>
+                <span className="avatar">{initial}</span><span className="profile-name">Profile</span>
+              </button>
+              {profileOpen && (
+                <div className="profile-popover" role="menu">
+                  <div className="profile-popover-heading"><span className="avatar">{initial}</span><div><strong>Your profile</strong><small>Personal workspace</small></div></div>
+                  <Link href="/settings" role="menuitem" onClick={() => setProfileOpen(false)}><Settings /> Settings</Link>
+                  <Link href="/knowledge" role="menuitem" onClick={() => setProfileOpen(false)}><BookOpen /> Knowledge</Link>
+                  <Link href="/reference-records" role="menuitem" onClick={() => setProfileOpen(false)}><ScrollText /> Schemes</Link>
+                </div>
+              )}
+            </div>
           </div>
         </header>
         <main id="main-content">

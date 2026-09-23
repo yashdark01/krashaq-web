@@ -1983,3 +1983,25 @@ nav a svg { flex: 0 0 auto; }
 @media (prefers-reduced-motion: reduce) {
   .sidebar, nav a { transition: none; }
 }
+
+.chat-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chat-title-row h1 { margin-bottom: 0; }
+.chat-title-row .badge { gap: 6px; color: #357653; border-color: #d6e5d1; background: #f1f8ed; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: #63a66f; box-shadow: 0 0 0 3px #dff0dc; }
+.chat-empty-state { overflow: hidden; border-color: #dce7d7; background: linear-gradient(145deg, rgba(255,255,255,.96), rgba(245,250,242,.9)); box-shadow: 0 16px 50px rgba(37, 75, 46, .08); animation: chat-empty-in 420ms ease both; }
+.chat-empty-state > div { display: flex; flex-direction: column; align-items: center; }
+.chat-empty-icon { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 18px; border: 1px solid #d7e7d0; border-radius: 18px; color: var(--green); background: #edf7e9; }
+.chat-empty-eyebrow { margin: 0 0 8px !important; color: #71906e !important; font-size: 9px; font-weight: 800; letter-spacing: 1.5px; }
+.chat-capabilities { display: flex !important; flex-direction: row !important; flex-wrap: wrap; justify-content: center; gap: 7px; margin: 0 0 22px; }
+.chat-capabilities .badge { color: #647c62; border-color: #dce8d8; background: rgba(255,255,255,.7); }
+.chat-starters { display: grid !important; grid-template-columns: repeat(3, 1fr); width: 100%; gap: 9px; }
+.chat-starters .button { min-height: 68px; align-items: flex-start; justify-content: space-between; padding: 12px; color: var(--ink); text-align: left; white-space: normal; }
+.chat-starters .button:hover { border-color: #b8cfaf; background: #fbfdf9; transform: translateY(-2px); }
+@keyframes chat-empty-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 720px) {
+  .chat-starters { grid-template-columns: 1fr; }
+  .chat-title-row { gap: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-empty-state, .chat-starters .button { animation: none; transition: none; }
+}

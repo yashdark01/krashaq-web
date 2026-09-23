@@ -49,7 +49,9 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectFarm } from '@/features/ui/ui.slice';
 import { ApprovalPanel, type PendingApproval } from './approval-panel';
 import { RichMessage } from './rich-message';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Attachment, AttachmentPreview } from '@/components/ui/attachment';
 import { Bubble, BubbleContent } from '@/components/ui/bubble';
@@ -806,10 +808,13 @@ export function ChatWorkspace({
             >
               <Menu size={20} />
             </button>
-            <div>
-              <span>{config.eyebrow}</span>
-              <h1>{weather ? 'Your local forecast' : config.title}</h1>
-            </div>
+              <div>
+                <span>{config.eyebrow}</span>
+                <div className="chat-title-row">
+                  <h1>{weather ? 'Your local forecast' : config.title}</h1>
+                  <Badge variant="secondary"><span className="status-dot" /> Ready</Badge>
+                </div>
+              </div>
           </div>
           <div className="chat-header-actions">
             {mode === 'farming' && (
@@ -879,25 +884,27 @@ export function ChatWorkspace({
                   </div>
                 )}
                 {!loadingThread && turns.length === 0 && (
-                  <div className="chat-empty-state">
-                    <div>
-                      <Sparkles size={26} />
-                    </div>
-                    <h2>{config.empty}</h2>
-                    <p>{config.description}</p>
-                    <div>
-                      {config.starters.map((starter) => (
-                        <button
-                          type="button"
-                          onClick={() => setText(starter)}
-                          key={starter}
-                        >
-                          {starter}
-                          <ArrowUp size={15} />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <Card className="chat-empty-state">
+                    <CardContent>
+                      <div className="chat-empty-icon"><Sparkles size={25} /></div>
+                      <p className="chat-empty-eyebrow">A BETTER WAY TO ASK</p>
+                      <h2>{config.empty}</h2>
+                      <p>{config.description}</p>
+                      <div className="chat-capabilities" aria-label="Assistant capabilities">
+                        <Badge variant="outline">Trusted sources</Badge>
+                        <Badge variant="outline">Farm-aware guidance</Badge>
+                        <Badge variant="outline">Hindi + English</Badge>
+                      </div>
+                      <div className="chat-starters">
+                        {config.starters.map((starter) => (
+                          <Button type="button" variant="outline" onClick={() => setText(starter)} key={starter}>
+                            {starter}
+                            <ArrowUp data-icon="inline-end" />
+                          </Button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
                 )}
                 {turns.map((run) => (
                   <ConversationMessage
@@ -991,7 +998,7 @@ export function ChatWorkspace({
               value={text}
               onChange={(event) => setText(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' && !event.shiftKey) {
+                if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing && event.keyCode !== 229) {
                   event.preventDefault();
                   void send();
                 }

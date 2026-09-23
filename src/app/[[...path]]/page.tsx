@@ -12,7 +12,9 @@ import {
   Plus,
   ExternalLink,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FarmMap } from '@/components/farm-map';
 import {
   api,
@@ -39,7 +41,9 @@ import { ProfileCard } from '@/features/auth/profile-card';
 import { SessionGate } from '@/features/auth/session-gate';
 import { AdminUsers } from '@/features/admin/admin-users';
 import { ChatWorkspace } from '@/features/chat/chat-workspace';
+import { useT } from '@/lib/i18n';
 function Dashboard() {
+  const t = useT();
   const { data } = useFarmsQuery();
   const { data: profile } = useProfileQuery();
   const router = useRouter();
@@ -50,70 +54,49 @@ function Dashboard() {
   }, [data?.farms.length, role, router]);
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading dashboard-heading">
         <div>
-          <span className="eyebrow">A NEW PERSPECTIVE ON YOUR LAND</span>
+          <div className="dashboard-kicker"><span className="eyebrow">{t('A NEW PERSPECTIVE ON YOUR LAND')}</span><Badge variant="secondary"><span className="status-dot" /> {t('Today')}</Badge></div>
           <h1>
-            Good things grow
+            {t('Good things grow')}
             <br />
-            from better decisions.
+            {t('from better decisions.')}
           </h1>
           <p className="muted">
-            Your farm, your weather, and a little help with what comes next.
+            {t('Your farm, your weather, and a little help with what comes next.')}
           </p>
         </div>
-        <div className="season-mark">
+        <div className="season-mark" aria-hidden="true">
           <Sprout size={72} />
-          <span>GROW WITH CONFIDENCE</span>
+          <span>{t('GROW WITH CONFIDENCE')}</span>
         </div>
       </div>
-      <div className="hero-card">
-        <div>
-          <span className="eyebrow">YOUR FARM COMPANION</span>
-          <h2>
-            Every season brings questions.
-            <br />
-            Let’s find your answers.
-          </h2>
-          <p>
-            Ask about your farm’s forecast or explore trusted agricultural
-            knowledge.
-          </p>
-          <Link className="button button-primary" href="/krashaq-ai">
-            Ask Krashaq <ArrowUpRight size={16} />
-          </Link>
-        </div>
-        <div className="field-art">
-          <i />
-          <i />
-          <i />
-          <i />
-          <Sprout size={90} />
-        </div>
-      </div>
-      <div className="cards">
-        <Link className="card" href="/farms">
-          <MapPin />
-          <span>YOUR LAND</span>
-          <h2>{data?.farms.length ?? '—'} farms</h2>
-          <p>Keep your location and crops up to date.</p>
-        </Link>
-        <Link className="card" href="/weather">
-          <CloudSun />
-          <span>THE DAYS AHEAD</span>
-          <h2>Local weather</h2>
-          <p>
-            {profile?.active_farm_id
-              ? 'Explore the forecast for your selected farm.'
-              : 'Select a farm to see local forecasts.'}
-          </p>
-        </Link>
-        <Link className="card" href="/alerts">
-          <Bell />
-          <span>STAY A STEP AHEAD</span>
-          <h2>Farm alerts</h2>
-          <p>Updates relevant to your land and crops.</p>
-        </Link>
+      <Card className="hero-card dashboard-hero">
+        <CardContent>
+          <div>
+            <span className="eyebrow">{t('YOUR FARM COMPANION')}</span>
+<h2>
+                {t('Every season brings questions.')}
+              </h2>
+            <p>
+              {t("Ask about your farm's forecast or explore trusted agricultural knowledge.")}
+            </p>
+            <Button asChild><Link href="/krashaq-ai">{t('Ask Krashaq')} <ArrowUpRight data-icon="inline-end" /></Link></Button>
+          </div>
+          <div className="field-art" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+            <Sprout size={90} />
+          </div>
+        </CardContent>
+      </Card>
+      <div className="dashboard-section-heading"><div><span className="eyebrow">YOUR FARM AT A GLANCE</span><h2>Everything important, in one place.</h2></div><Link href="/farms" className="text-link">Manage your farms <ArrowUpRight /></Link></div>
+      <div className="cards dashboard-cards">
+        <Card className="dashboard-card"><CardHeader><div className="dashboard-card-icon"><MapPin /></div><CardTitle><span>YOUR LAND</span>{data?.farms.length ?? '—'} farms</CardTitle></CardHeader><CardContent><p>Keep your location and crops up to date.</p><Link href="/farms" className="text-link">View farms <ArrowUpRight /></Link></CardContent></Card>
+        <Card className="dashboard-card"><CardHeader><div className="dashboard-card-icon"><CloudSun /></div><CardTitle><span>THE DAYS AHEAD</span>Local weather</CardTitle></CardHeader><CardContent><p>{profile?.active_farm_id ? 'Explore the forecast for your selected farm.' : 'Select a farm to see local forecasts.'}</p><Link href="/weather" className="text-link">Open forecast <ArrowUpRight /></Link></CardContent></Card>
+        <Card className="dashboard-card"><CardHeader><div className="dashboard-card-icon"><Bell /></div><CardTitle><span>STAY A STEP AHEAD</span>Farm alerts</CardTitle></CardHeader><CardContent><p>Updates relevant to your land and crops.</p><Link href="/alerts" className="text-link">Review alerts <ArrowUpRight /></Link></CardContent></Card>
       </div>
     </>
   );
@@ -276,10 +259,11 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
   }
   return (
     <>
-      <header className="section-title">
+      <header className="section-title farms-heading">
         <div>
-          <span className="eyebrow">ROOTED IN YOUR LAND</span>
+          <div className="farms-kicker"><span className="eyebrow">ROOTED IN YOUR LAND</span><Badge variant="secondary"><span className="status-dot" /> Farm workspace</Badge></div>
           <h1>{newFarm ? 'Add your farm' : farm ? farm.name : 'My farms'}</h1>
+          <p className="muted">Keep your land, crops, and local guidance connected.</p>
         </div>
         <Link href="/farms/new" className="button button-primary">
           <Plus size={16} /> Add farm
@@ -500,19 +484,18 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
           </section>
         </>
       ) : (
-        <div className="cards">
+        <div className="cards farms-grid">
           {data?.farms.map((f) => (
-            <div className="card" key={f.id}>
-              <MapPin />
-              <h2>
-                <Link href={`/farms/${f.id}`}>{f.name}</Link>
-              </h2>
-              <p>
-                {f.latitude.toFixed(4)}, {f.longitude.toFixed(4)}
-              </p>
-              <Button
-                variant="outline"
-                onClick={async () => {
+            <Card className="farm-card" key={f.id}>
+              <CardHeader>
+                <div className="farm-card-icon"><MapPin /></div>
+                <CardTitle><span>ACTIVE LAND</span><Link href={`/farms/${f.id}`}>{f.name}</Link></CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="farm-coordinates">{f.latitude.toFixed(4)}, {f.longitude.toFixed(4)}</p>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
                   try {
                     await mutate(`farms/${f.id}/select`);
                     dispatch(selectFarm(f.id));
@@ -522,10 +505,11 @@ function Farms({ id, newFarm }: { id?: string; newFarm?: boolean }) {
                     setMessage(String(e));
                   }
                 }}
-              >
-                Use this farm
-              </Button>
-            </div>
+                >
+                  Use this farm
+                </Button>
+              </CardContent>
+            </Card>
           ))}
           {data?.farms.length === 0 && (
             <div className="panel">
@@ -591,8 +575,14 @@ function Alerts() {
   }
   return (
     <>
-      <h1>Farm alerts</h1>
-      <section className="panel">
+      <header className="section-title alerts-heading">
+        <div>
+          <div className="alerts-kicker"><span className="eyebrow">STAY A STEP AHEAD</span><Badge variant="secondary"><span className="status-dot" /> Live monitoring</Badge></div>
+          <h1>Farm alerts</h1>
+          <p className="muted">Choose what deserves your attention, then act before conditions change.</p>
+        </div>
+      </header>
+      <section className="panel alerts-preferences">
         <span className="eyebrow">ALERT PREFERENCES</span>
         {preferencesError || !preferences ? (
           <p className="muted">Preferences are currently unavailable.</p>
@@ -694,8 +684,8 @@ function Alerts() {
       {error ? (
         <p className="panel">Alerts are currently unavailable.</p>
       ) : data?.alerts.length ? (
-        data.alerts.map((a) => (
-          <article className="panel" key={a.id}>
+          data.alerts.map((a) => (
+          <article className="panel alert-card" key={a.id}>
             <div className="badge-row">
               {a.hazard?.severity ? (
                 <span className="badge badge-source">{a.hazard.severity}</span>
@@ -792,13 +782,15 @@ function Markets() {
   );
   return (
     <>
-      <header className="section-title">
+      <header className="section-title markets-heading">
         <div>
-          <span className="eyebrow">LOCAL MANDI OBSERVATIONS</span>
+          <div className="markets-kicker"><span className="eyebrow">LOCAL MANDI OBSERVATIONS</span><Badge variant="secondary"><span className="status-dot" /> Live sources</Badge></div>
           <h1>Markets</h1>
+          <p className="muted">Compare nearby mandi prices and follow the movement that matters.</p>
         </div>
       </header>
-      <div className="filter-row">
+      <div className="filter-row markets-filters">
+        <div className="filter-intro"><span className="eyebrow">FILTER OBSERVATIONS</span><p className="muted">Choose a crop to narrow the local view.</p></div>
         <label>
           Commodity
           <select
@@ -821,42 +813,17 @@ function Markets() {
       ) : (
         <div className="cards">
           {data?.markets.map((market) => (
-            <article
-              className={`card market-card${selectedMarketId === market.marketId ? ' selected' : ''}`}
-              key={market.id}
-            >
-              <div className="badge-row">
-                <span className="badge badge-source">{market.source}</span>
-                <span
-                  className={`badge ${market.stale ? 'badge-stale' : 'badge-fresh'}`}
-                >
-                  {market.stale ? 'Stale' : 'Fresh'}
-                </span>
-              </div>
-              <h2>{market.name}</h2>
-              <p>
-                {market.commodity}
-                {market.variety ? ` · ${market.variety}` : ''}
-              </p>
-              <strong>
-                {market.price.toLocaleString()} {market.unit}
-              </strong>
-              <p className="muted">
-                Observed {new Date(market.observedAt).toLocaleString()}
-                {market.state ? ` · ${market.state}` : ''}
-              </p>
-              {market.sourceUrl && (
-                <a href={market.sourceUrl} target="_blank" rel="noreferrer">
-                  View source <ExternalLink size={14} />
-                </a>
-              )}
-              <Button
-                variant="outline"
-                onClick={() => setSelectedMarketId(market.marketId)}
-              >
-                View history
-              </Button>
-            </article>
+              <Card className={`market-card${selectedMarketId === market.marketId ? ' selected' : ''}`} key={market.id}>
+                <CardHeader>
+                  <div className="badge-row"><Badge variant="outline">{market.source}</Badge><span className={`badge ${market.stale ? 'badge-stale' : 'badge-fresh'}`}>{market.stale ? 'Stale' : 'Fresh'}</span></div>
+                  <CardTitle><span>{market.commodity}{market.variety ? ` · ${market.variety}` : ''}</span>{market.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <strong className="market-price">{market.price.toLocaleString()} <small>{market.unit}</small></strong>
+                  <p className="muted">Observed {new Date(market.observedAt).toLocaleString()}{market.state ? ` · ${market.state}` : ''}</p>
+                  <div className="market-card-actions">{market.sourceUrl && <a href={market.sourceUrl} target="_blank" rel="noreferrer">View source <ExternalLink size={14} /></a>}<Button variant="outline" onClick={() => setSelectedMarketId(market.marketId)}>View history</Button></div>
+                </CardContent>
+              </Card>
           ))}
           {!data?.markets.length && (
             <div className="panel">
@@ -913,13 +880,14 @@ function ReferenceRecords() {
     }) ?? [];
   return (
     <>
-      <header className="section-title">
+      <header className="section-title schemes-heading">
         <div>
-          <span className="eyebrow">AGRICULTURE REFERENCE DATA</span>
+          <div className="schemes-kicker"><span className="eyebrow">AGRICULTURE REFERENCE DATA</span><Badge variant="secondary">Verified guidance</Badge></div>
           <h1>Schemes & guidance</h1>
+          <p className="muted">Find support programmes and practical guidance matched to your land.</p>
         </div>
       </header>
-      <div className="filter-row">
+      <div className="filter-row schemes-filters">
         <label>
           State
           <select value={state} onChange={(e) => setState(e.target.value)}>
@@ -942,7 +910,7 @@ function ReferenceRecords() {
         <p className="panel">Reference records are currently unavailable.</p>
       ) : records.length ? (
         records.map((record) => (
-          <article className="panel reference-card" key={record.id}>
+          <Card className="panel reference-card" key={record.id}>
             <div className="badge-row">
               <span className="badge badge-source">
                 {record.content.dataset ?? 'reference'}
@@ -975,7 +943,7 @@ function ReferenceRecords() {
                 Published {new Date(record.published_at).toLocaleDateString()}
               </small>
             )}
-          </article>
+          </Card>
         ))
       ) : (
         <div className="panel">

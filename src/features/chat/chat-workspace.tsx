@@ -49,7 +49,9 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectFarm } from '@/features/ui/ui.slice';
 import { ApprovalPanel, type PendingApproval } from './approval-panel';
 import { RichMessage } from './rich-message';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Attachment, AttachmentPreview } from '@/components/ui/attachment';
 import { Bubble, BubbleContent } from '@/components/ui/bubble';
@@ -69,6 +71,7 @@ import {
   MessageScrollerViewport,
 } from '@/components/ui/message-scroller';
 import { Spinner } from '@/components/ui/spinner';
+import { useT } from '@/lib/i18n';
 
 type LocalImage = { id: string; preview: string; expiresAt: string };
 type SelectedSource = { evidence: ChatEvidence; index: number } | null;
@@ -131,6 +134,7 @@ function ThreadSidebar({
   onSelect: (id: string) => void;
   onNew: () => void;
 }) {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [archived, setArchived] = useState(false);
   const [editing, setEditing] = useState<string>();
@@ -164,7 +168,7 @@ function ThreadSidebar({
       aria-label="Conversation history"
     >
       <div className="chat-thread-head">
-        {!collapsed && <strong>Conversations</strong>}
+        {!collapsed && <strong>{t('Conversations')}</strong>}
         <button
           type="button"
           onClick={onToggle}
@@ -183,7 +187,7 @@ function ThreadSidebar({
       </div>
       <button type="button" className="chat-new-thread" onClick={onNew}>
         <Plus size={17} />
-        {!collapsed && 'New conversation'}
+        {!collapsed && t('New conversation')}
       </button>
       {!collapsed && (
         <>
@@ -193,7 +197,7 @@ function ThreadSidebar({
               aria-label="Search conversations"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search conversations"
+              placeholder={t('Search conversations')}
             />
           </label>
           <div className="chat-thread-filter">
@@ -202,20 +206,20 @@ function ThreadSidebar({
               className={!archived ? 'active' : ''}
               onClick={() => setArchived(false)}
             >
-              Recent
+              {t('Recent')}
             </button>
             <button
               type="button"
               className={archived ? 'active' : ''}
               onClick={() => setArchived(true)}
             >
-              Archived
+              {t('Archived')}
             </button>
           </div>
           <div className="chat-thread-list">
             {isFetching && !data && (
               <div className="chat-thread-loading">
-                <Spinner size={16} /> Loading
+                <Spinner size={16} /> {t('Loading')}
               </div>
             )}
             {data?.threads.map((thread) => (
@@ -500,6 +504,16 @@ export function ChatWorkspace({
   weather?: boolean;
 }) {
   const config = copy[mode];
+  const t = useT();
+  const localizedConfig = {
+    ...config,
+    title: t(config.title),
+    eyebrow: t(config.eyebrow),
+    placeholder: t(config.placeholder),
+    empty: t(config.empty),
+    description: t(config.description),
+    starters: config.starters.map(t),
+  };
   const dispatch = useAppDispatch();
   const locale = useAppSelector((state) => state.ui.locale);
   const selectedFarmId = useAppSelector((state) => state.ui.selectedFarmId);
@@ -810,14 +824,17 @@ export function ChatWorkspace({
               type="button"
               className="chat-mobile-menu"
               onClick={() => setMobileThreads(true)}
-              aria-label="Open conversations"
+              aria-label={t('Open conversations')}
             >
               <Menu size={20} />
             </button>
-            <div>
-              <span>{config.eyebrow}</span>
-              <h1>{weather ? 'Your local forecast' : config.title}</h1>
-            </div>
+              <div>
+                <span>{t(localizedConfig.eyebrow)}</span>
+                <div className="chat-title-row">
+                  <h1>{t(weather ? 'Your local forecast' : localizedConfig.title)}</h1>
+                  <Badge variant="secondary"><span className="status-dot" /> {t('Ready')}</Badge>
+                </div>
+              </div>
           </div>
           <div className="chat-header-actions">
             {mode === 'farming' && (
@@ -832,7 +849,7 @@ export function ChatWorkspace({
                     if (id) await mutate(`farms/${id}/select`);
                   }}
                 >
-                  <option value="">No farm selected</option>
+                  <option value="">{t('No farm selected')}</option>
                   {farms?.farms.map((farm) => (
                     <option key={farm.id} value={farm.id}>
                       {farm.name}
@@ -847,7 +864,7 @@ export function ChatWorkspace({
               onClick={resetConversation}
               disabled={running}
             >
-              <Plus size={16} /> New chat
+              <Plus size={16} /> {t('New chat')}
             </Button>
           </div>
         </header>
@@ -859,53 +876,45 @@ export function ChatWorkspace({
         )}
         {mode === 'farming' && !activeFarm && (
           <div className="chat-context-warning">
-            Select a farm to use weather, mandi, and location-aware guidance.
+            {t('Select a farm to use weather, mandi, and location-aware guidance.')}
           </div>
         )}
 
         <MessageScrollerProvider autoScroll defaultScrollPosition="end">
           <MessageScroller>
             <MessageScrollerViewport
-              aria-label={`${config.title} conversation`}
+              aria-label={`${localizedConfig.title} conversation`}
               preserveScrollOnPrepend
             >
               <MessageScrollerContent>
-                {olderCursor && (
-                  <button
-                    type="button"
-                    className="chat-load-older"
-                    disabled={loadingThread}
-                    onClick={() => void loadOlder()}
-                  >
-                    {loadingThread && <Spinner size={14} />} Load earlier
-                    messages
-                  </button>
-                )}
+
                 {loadingThread && turns.length === 0 && (
                   <div className="chat-loading">
                     <Spinner /> Opening conversation…
                   </div>
                 )}
                 {!loadingThread && turns.length === 0 && (
-                  <div className="chat-empty-state">
-                    <div>
-                      <Sparkles size={26} />
-                    </div>
-                    <h2>{config.empty}</h2>
-                    <p>{config.description}</p>
-                    <div>
-                      {config.starters.map((starter) => (
-                        <button
-                          type="button"
-                          onClick={() => setText(starter)}
-                          key={starter}
-                        >
-                          {starter}
-                          <ArrowUp size={15} />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <Card className="chat-empty-state">
+                    <CardContent>
+                      <div className="chat-empty-icon"><Sparkles size={25} /></div>
+                      <p className="chat-empty-eyebrow">{t('A BETTER WAY TO ASK')}</p>
+                      <h2>{localizedConfig.empty}</h2>
+                      <p>{localizedConfig.description}</p>
+                      <div className="chat-capabilities" aria-label="Assistant capabilities">
+                        <Badge variant="outline">{t('Trusted sources')}</Badge>
+                        <Badge variant="outline">{t('Farm-aware guidance')}</Badge>
+                        <Badge variant="outline">{t('Hindi + English')}</Badge>
+                      </div>
+                      <div className="chat-starters">
+                        {localizedConfig.starters.map((starter) => (
+                          <Button type="button" variant="outline" onClick={() => setText(starter)} key={starter}>
+                            {t(starter)}
+                            <ArrowUp data-icon="inline-end" />
+                          </Button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
                 )}
                 {turns.map((run) => (
                   <ConversationMessage
@@ -999,16 +1008,16 @@ export function ChatWorkspace({
               value={text}
               onChange={(event) => setText(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' && !event.shiftKey) {
+                if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing && event.keyCode !== 229) {
                   event.preventDefault();
                   void send();
                 }
               }}
-              placeholder={config.placeholder}
+              placeholder={t(localizedConfig.placeholder)}
               disabled={Boolean(pendingApproval)}
               rows={1}
             />
-            <div className="chat-composer-actions">
+            <div className="chat-composer-actions" aria-label="Message actions">
               <div>
                 {mode === 'farming' && (
                   <label
@@ -1052,10 +1061,7 @@ export function ChatWorkspace({
               )}
             </div>
           </form>
-          <p>
-            Krashaq can make mistakes. Verify important farm and safety
-            decisions.
-          </p>
+          <p>{t('Krashaq can make mistakes. Verify important farm and safety decisions.')}</p>
         </div>
       </div>
       <SourcePanel
